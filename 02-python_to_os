@@ -8,6 +8,8 @@ import requests
 response = requests.get("http://www.google.com")
 print(response.text)
 
+module: datetime                 # convert between different time formats
+
 module: arrow                      # date handling
 date = arrow.get('2022-08-10', 'YYYY-MM-DD')     # parse string to date
 date.shift(weeks=+6).format('MMM DD YYYY')   # add 4 weeks to date and 
@@ -25,7 +27,36 @@ psutil.cpu_percent(0.1)
 
 Running python-modules on Linux
 use shebang: #!/usr/bin/env python3
-chmod +x                                                      # mark script as executable
+chmod +x                             # mark script as executable
 ./script.py
 
 
+Working with Files
+file = open("file.txt","w")        # second parameter: r -> read mode (default), w -> write only mode, a -> append, r+ -> read-write mode
+                                    # if file is opened for writing and it already exists, the old contents are deleted as soon as the file is opened
+file.readline()                    # reads file line by line, puts an \n automatically to the end <-- can be removed with strip()
+file.read()                        # reads file till the end
+lines = file.readlines()           # reads all lines of a file and returns them as list
+file.write("text")                 # returns number of characters that were written
+file.close()
+or
+with open("file.txt") as file:      # with automatically closes file after with block is left
+    print(file.readline())
+    
+    
+Working with the file system
+import os
+os.getcwd()                            # get current working directory
+os.listdir("dir")                      # returns a list of all files in the directory
+path = os.path.join("dir", "file.txt") # combines directory and file name os independently
+os.path.isdir("is_this_a_dir")         # check if parameter is a directory, eventually combine name with os.path.join("dir", "file.txt")
+os.mkdir("new_dir")
+os.rmdir("dir_to_remove")              # will only remove a directory if the directory is empty
+os.chdir("new_dir")
+os.path.exists("filename.txt")         # check if a file exists, returns True / False
+os.path.getsize("filename.txt")        # filesize
+ts = os.path.getmtime("filename.tx")   # last timestamp of modification; timestamp in milliseconds
+    datetime.datetime.fromtimestamp(ts) # format timestamp as actual date / attention: previously import datetime-module!    
+abs_path = os.path.abspath("file.txt") # returns absolute path to file
+os.remove("file_to_be_deleted.txt")    # remove file
+os.rename("old_name.txt", "new_name.txt")
