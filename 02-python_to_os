@@ -1,0 +1,31 @@
+pip install module_name
+
+Importing Modules:
+import module      # when module is imported, __init__.py is read
+
+module: requests                # module for http-requests
+import requests
+response = requests.get("http://www.google.com")
+print(response.text)
+
+module: arrow                      # date handling
+date = arrow.get('2022-08-10', 'YYYY-MM-DD')     # parse string to date
+date.shift(weeks=+6).format('MMM DD YYYY')   # add 4 weeks to date and 
+                                                                                     # format output
+ 
+module: pil                             # python image library
+image = PIL.Image.open('picture.jpg')
+print(image.size, image.format)
+
+module: shutil                        # system health
+du = shutil.disk_usage('/')
+module: psutil                        # performance monitoring
+psutil.cpu_percent(0.1)
+
+
+Running python-modules on Linux
+use shebang: #!/usr/bin/env python3
+chmod +x                                                      # mark script as executable
+./script.py
+
+
