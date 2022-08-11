@@ -1,0 +1,66 @@
+functions:
+def name(para):
+    ...
+    return a, b, c                # This is a tuple
+d, e, f = name(args)              # tuple is unpacked
+
+
+String - iterable, immutable
+str[0]    - adresses special position in string
+str[-1]   - adresses special position in string in reverse order
+substring in str   - check, if substring is contained in string
+str[start:end]          - slices array
+len(str)
+str.index("char")  - index of char
+str.strip(), .lstrip(), .rstrip()  - removes whitespaces
+
+
+Lists - iterable, mutable    # analog Array
+list = ["a", "b", "c"]
+list.append(element)
+list.insert(position, element)
+list.remove(element)
+element = list.pop(element_to_remove)
+list.replace(element, new_element)
+list.sort()
+list.reverse()
+list.clear()
+list.copy()
+list.extend(other_list)    # concatenate other_list to list
+list = [x*7 for x in range(11)]        # list comprehension
+list = [len(x) for x in other_iterable_list]
+list = [x for x in range(101) if x % 3 == 0]
+
+
+Tuple - iterable, immutable 
+tuple = ("a", "b", "c")             # the order can have a meaning - that is what tuples are for
+
+
+Dictionary - iterable, 
+dict = {"key_a": "value_a", "key_b": "value_b"}
+dict.get(key, default)     # get value for key; if not present in dict -> default
+dict1.update(dict2)       # dict1 and dict2 are merged with dict2 preceding
+del dict[key]
+key in dict                        # check if given key is in a dictionary
+key not in dict
+
+
+for-Loop
+for i in range(number):
+for index, element in enumerate(list):
+for a, b, c in list_of_tuples:          # list_of_tuples = [("a", "b", "c"), ("d", "e", "f")]
+for ... in dict.items()                     # iterate over key: value pairs
+for keys in dict.keys()                   # iterate over just the keys
+for values in dict.values()            # iterate over just the values
+
+
+OOP
+class class_name:
+    """docstring in triple quotation marks"""
+    attribut = ""
+    def __special_method__(self, args):      # e.g. __init__ / __str__
+        body
+    def method(para1, para2):
+        return result
+
+class inherited_class(class_name):     # inheritance
