@@ -82,6 +82,7 @@ with open('file.csv', 'w') as file_csv:  # write to csv-file using a dict
     writer.writeheader()
     writer.writerows(dict)               # dict is a dictionary, which keys are identical to the list-variable keys
     
+#=============================================================================================================================================================
 
 Regular Expressions
 
@@ -111,12 +112,66 @@ result = re.search(r'regex_as_string', text_to_be_looked_at)    # r -> Rawstring
                                                                 # if Rawstring is a pure text string, then the 'r' would not be needed
                                                                 # but: Always use Rawstrings for regular expressions in Python!!!
                                                                 # result is a re.Match object <; span, match = matching_string>; if nothing is found None is returned
-                                                                # re.Match object is a list, [0]: all results, [1]: first group, [2]: second group, ...
+                                                                # re.Match object is a tuple, [0]: all results, [1]: first group, [2]: second group, ...
                                                                          # groups are built acc. to parenthesis in reg ex-string, e.g. r'(\w+), (\w+)' 
-re.search(r'regex', textr'regex', text, re.IGNORECASE())  # search case insensitive
-re.findall(r'regex', textr'regex')                        # find all matches, returns a list with all results
+re.search(r'regex', text, re.IGNORECASE())  # search case insensitive
+re.findall(r'regex', text)                  # find all matches, returns a list with all results
+re.split(r'regex', text)                    # splits a text into different strings using regex
+re.sub(r'regex', new_text, text)            # replaces regex-strings in text by new_text
+                                            # new_text may also be a regex, e.g. to access captured groups: r'\2 \1' (second_group first_group)
 
 bash-Commands
 grep
 -i  : search case insensitive
 egrep                                       # also supports + and ? as repeated match qualifiers 
+
+#=============================================================================================================================================================
+
+Data Streams
+
+I/O Streams:     STDIN, STDOUT, STERROR
+
+user_input = input("This text will be shown on screen to the user')       # input always returns a string; must be explicitely parsed to other data types
+
+Access Environment Variables in Python
+import os
+path = os.environ.get("PATH", "default_value") # could also be accessed via os.environ['PATH'], but the get-methon returns a default value if the value is not defined
+                                                 # while accessing the non-existing value directly would return an error
+import sys
+sys.argv                                         # access arguments from the function call, returns a tuple
+sys.exit(failure_code)                           # exit a program while returning a failure code
+                                            
+run bash functionality in Python
+import subprocess                               # parent process is blocked while child process is executed
+subprocess.run(['date'])                         # print actual date, equal to command date in bash
+subprocess.run(['sleep', '2'])                   # called with two arguments (from 2nd parameter on: Command Line Arguments)
+
+result = subprocess.run(['ls', 'unknown_file')]  # one bash command with one parameter throws an error
+print(result.returncode)                         # returncode of child process made visible in python
+
+result = subprocess.run(['host', '8.8.8.8'], capture_output=True)      # capture_output delivers output in result.stdout
+print(result.returncode)                         # as already seen
+print(result.stdout)                             # show output of child process in Python
+                                                 # if output starts with b'' --> binary output (Python does not know which encoding to use)
+                                                 # UTF-8 encoding: part of unicode standard that lists all possible characters that can be represented
+print(result.stdout.decode())                    # convert binary format into given encoding, default: UTF-8
+print(result.stdout.decode().split())            # split encoded output
+
+result = subprocess.run(['rm', 'does_not_exist.py'], capture_output=True)     # throws an error
+print(result.returncode)                         # != 0
+print(result.stdout)                             # b''
+print(result.stderr)                             # b"failure message" (in binary code)
+
+#=============================================================================================================================================================
+
+Bash commands
+
+echo              # print 
+  echo $?           # print info on $-variable which contains the error messega (0 - success, > 0 - error)
+env               # show environment variables
+export            # create new environment variable and make it visible to all processes, e.g. export ENV_VARIABLE=env_var_to_set
+host              # return name to given ip address
+rm                # remove file(s)
+wc                # counts number of words, lines, ...
+who               # prints the user who is currently logged in
+
