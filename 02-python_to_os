@@ -60,3 +60,63 @@ ts = os.path.getmtime("filename.tx")   # last timestamp of modification; timesta
 abs_path = os.path.abspath("file.txt") # returns absolute path to file
 os.remove("file_to_be_deleted.txt")    # remove file
 os.rename("old_name.txt", "new_name.txt")
+
+
+csv-Files
+import csv
+f = open("csv_file.txt")                # use attributes w and a to write to csv-file
+csv_f = csv.reader(f)
+for row in csv_f:                     # read csv-file
+    col1, col2, col3 = row              # unpack values, col1 == row[0]
+    
+with open('file.csv', 'w') as file_csv:  # write to a csv-file with a list
+    writer = csv.writer(file_csv)
+    writer.writerow([value1, value2, value3])    # writes a single row to a csv file
+    writer.writerows([[value1, value2, value3], [value4, value5, value6]])     # write list of lists to a csv file 
+    
+with open('file.csv') as file_csv:  # read csv-file into a dict
+    reader = csv.DictReader(file_csv)     # reads a file into a dict, using first row as keys
+    
+with open('file.csv', 'w') as file_csv:  # write to csv-file using a dict
+    writer = csv.DictWriter(file_csv, fieldnames=keys)     # keys is a list of the key names
+    writer.writeheader()
+    writer.writerows(dict)               # dict is a dictionary, which keys are identical to the list-variable keys
+    
+
+Regular Expressions
+
+RegEx
+.      matches any character (wildcard)
+^      position must match the beginning
+$      position must match the end
+()     capturing group
+[]     define a range, e.g. [pP], [a-z], [a-zA-Z0-9], [.,:;?!]
+[^]    define a range which is excluded [^a-zA-Z ] (exclude any letter - case insensitive - and space)
+|      separate words to find
+repeated match qualifiers
+*      match any number of chars incl. zero times; it works "greedy" (matches as many characters as possible)
++      match any number of chars at least one time; it works "greedy" (matches as many characters as possible)
+?      character before is optional, like p? or [a-z]?
+{}     numeric repetition qualifiers, e.g. {5}, {1,5}
+Escpaing characters
+.*+?^$[]{}
+Special Sequences
+\b     word boundaries, e.g. r'\b[a-zA-Z]{5}\b' all words with exactly 5 characters
+\d     digits
+\s     whitespace characters (like space, tab, newline \n
+\w     any alphanumeric character (incl. letters, numbers, underscores)
+
+import re
+result = re.search(r'regex_as_string', text_to_be_looked_at)    # r -> Rawstring shall not be interpreted by Python but shall be handed to the function as is
+                                                                # if Rawstring is a pure text string, then the 'r' would not be needed
+                                                                # but: Always use Rawstrings for regular expressions in Python!!!
+                                                                # result is a re.Match object <; span, match = matching_string>; if nothing is found None is returned
+                                                                # re.Match object is a list, [0]: all results, [1]: first group, [2]: second group, ...
+                                                                         # groups are built acc. to parenthesis in reg ex-string, e.g. r'(\w+), (\w+)' 
+re.search(r'regex', textr'regex', text, re.IGNORECASE())  # search case insensitive
+re.findall(r'regex', textr'regex')                        # find all matches, returns a list with all results
+
+bash-Commands
+grep
+-i  : search case insensitive
+egrep                                       # also supports + and ? as repeated match qualifiers 
