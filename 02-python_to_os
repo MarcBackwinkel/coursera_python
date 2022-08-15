@@ -139,6 +139,7 @@ path = os.environ.get("PATH", "default_value") # could also be accessed via os.e
                                                  # while accessing the non-existing value directly would return an error
 import sys
 sys.argv                                         # access arguments from the function call, returns a tuple
+logfile = sys.argv[1]                            # argument 1 contains the logfile, e.g. bash:~$ ./run_python.py syslog
 sys.exit(failure_code)                           # exit a program while returning a failure code
                                             
 run bash functionality in Python
@@ -157,15 +158,29 @@ print(result.stdout)                             # show output of child process 
 print(result.stdout.decode())                    # convert binary format into given encoding, default: UTF-8
 print(result.stdout.decode().split())            # split encoded output
 
-result = subprocess.run(['rm', 'does_not_exist.py'], capture_output=True)     # throws an error
+result = subprocess.run(['rm', 'does_not_exist.py'], capture_output=True)     # throws an error; subprocess.run returns a CompletedProcess-object
 print(result.returncode)                         # != 0
 print(result.stdout)                             # b''
 print(result.stderr)                             # b"failure message" (in binary code)
+
+
+Process: Take environment variables, add / change them as needed and hand them over to the child process
+import os
+my_env = os.environ.copy()
+my_env['PATH'] = os.pathsep.join(["/own/path/", my_env['PATH']])        # add own_path to enviroment variable, original environment is NOT changed
+                                                                        # pathsep = path seperator
+result = subprocess.run(["myapp"], env = my_env)
+
+what can also be changed?
+cwd      - set own current working directory
+timeout  - set own timeout, e.g. if system hangs up
+shell    - true, will first execute an instance of the system default shell and run the given command inside of it
 
 #=============================================================================================================================================================
 
 Bash commands
 
+cronjobs          # schedule based scripts on UNIX operating systems
 echo              # print 
   echo $?           # print info on $-variable which contains the error messega (0 - success, > 0 - error)
 env               # show environment variables
