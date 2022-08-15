@@ -39,6 +39,10 @@ tuple = ("a", "b", "c")             # the order can have a meaning - that is wha
 Dictionary - iterable, 
 dict = {"key_a": "value_a", "key_b": "value_b"}
 dict.get(key, default)     # get value for key; if not present in dict -> default
+
+# use dict for counting occurences
+dict[name] = dict.get(name, 0) + 1      # increases counter or - if dict entry is not available - set it to 0 + 1
+
 dict1.update(dict2)       # dict1 and dict2 are merged with dict2 preceding
 del dict[key]
 key in dict                        # check if given key is in a dictionary
