@@ -13,6 +13,7 @@ str[start:end]          - slices array
 len(str)
 str.index("char")  - index of char
 str.strip(), .lstrip(), .rstrip()  - removes whitespaces
+str.isalnum()                      # checks if each char is a number
 
 
 Lists - iterable, mutable    # analog Array
