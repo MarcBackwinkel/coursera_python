@@ -3,6 +3,9 @@ pip install module_name
 Importing Modules:
 import module      # when module is imported, __init__.py is read
 
+import module sys               # The sys module provides information about the Python interpreter's constants, functions, and methods. 
+import module os                # The os module provides a portable way of using operating system dependent functionality with Python.
+
 module: requests                # module for http-requests
 import requests
 response = requests.get("http://www.google.com")
@@ -175,6 +178,96 @@ what can also be changed?
 cwd      - set own current working directory
 timeout  - set own timeout, e.g. if system hangs up
 shell    - true, will first execute an instance of the system default shell and run the given command inside of it
+
+#=============================================================================================================================================================
+
+Error Handling
+
+try:
+    f = open(filename)
+except OSError:
+    return None
+    
+# raising own errors
+if not wanted_condition:
+    raise ValueError('descriptive error message')
+    
+
+
+#=============================================================================================================================================================
+
+Testing
+
+Automated Testg :        Automate Process of checking if the returned value matches the expectations
+                         Test Cases are built automatically
+
+Unit Tests:              Type of Automated Testing
+                         Used to verify that small, isolated parts of a program are correct
+                         Test should never modify the production environment; if the environment is needed tests run in a test environment
+
+
+Edge cases:               Inputs to our code that produce unexpected results, and are found at the extreme ends of the ranges of input we 
+                          imagine our programs will typically work with
+                          
+White-box testing         also sometimes called clear-box or transparent testing relies on the test creators knowledge of the software being 
+                          tested to construct the test cases.
+
+black-box testing         the software being tested is treated like an opaque (undurchsichtig) box. Black-box tests are written with an 
+                          awareness of what the program is supposed to do, its requirements or specifications, but not how it does it.
+
+test script.py with a seperate script, e.g. script_test.py ----------------------------------------------------------------------
+
+>> script_test.py
+#! ...
+from script import function_to_test
+import unittest                        # Python module for testing
+
+class TestFunctionToTest(unittest.TestCase):        # write own test function that inherits from unittest class
+ 
+# assertEqual
+    def test_case_1(self):                          # function name must start with "test" to be taken into account by the unittest module
+        testcase = "testcase for function_to_test"
+        expected = "expected return value from function to test"
+        self.assertEqual(function_to_test(testcase), expected)      # assertEqual is inherited from TestCase class
+        
+# assert                                                        # depending on the state of the program an error is raised
+assert type(username) == str, "username must be a string"     # also helpful for debugging
+
+# assertRaises                                                  # checks if an error is raised
+self.assertRaises(ValueError, function_to_test, para1, para2)   # checks if a ValueError is raised with given para1 and para2
+
+        
+unittest.main()  # start Test
+
+------------------------------------------------------------------------------------------------------------------------------------
+
+Integration Tests:        after units are tested here the all-in-all is tested
+                          is maybe performed in own test environment
+                          interactivity between different modules is tested
+                          Verifying an automation script works well with the overall system and external entities
+
+Regression Tests:         test is performed, bug is fixed, test is re-performed and checked that the bug is gone
+                          A test that is written after a bug has been identified in order to ensure the bug doesn't show up again later is called Reg. Test
+
+Smoke Tests               or build verification tests
+                          Does the program run? Comes from hardware development (if there is smoke there is fire!)
+                          This test finds out if the program can run in its basic form before undergoing more refined test cases.
+                          
+Load tests                Scripts performs well if there is a high load on the system
+                          type of software testing used to verify the software’s ability to behave well under significantly stressed testing conditions
+
+Test suite                Many tests that work together, a suite of tests
+
+Test-Driven Development:  TDD
+                          First: create Tests, that later code shall succeed; Then: write the code
+                          
+Continuous Integration:   When engineers submit their code, it's integrated into the main repository and tests are automatically run 
+                          against it to spot bugs and errors in a process called Continuous Integration. 
+                          Although useful, setting up a continuous integration process can be a big undertaking.
+
+
+
+
 
 #=============================================================================================================================================================
 
