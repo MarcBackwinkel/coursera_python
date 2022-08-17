@@ -135,6 +135,8 @@ Data Streams
 I/O Streams:     STDIN, STDOUT, STERROR
 
 user_input = input("This text will be shown on screen to the user')       # input always returns a string; must be explicitely parsed to other data types
+                                                                          # is input is read from a file (read_input.py < text_file.txt) the input is read until the
+                                                                          # first newline character (\n)
 
 Access Environment Variables in Python
 import os
@@ -144,6 +146,7 @@ import sys
 sys.argv                                         # access arguments from the function call, returns a tuple
 logfile = sys.argv[1]                            # argument 1 contains the logfile, e.g. bash:~$ ./run_python.py syslog
 sys.exit(failure_code)                           # exit a program while returning a failure code
+sys.stdin                                        # receives input from stdin (input_program.py < testfile.txt or by piping)
                                             
 run bash functionality in Python
 import subprocess                               # parent process is blocked while child process is executed
@@ -274,18 +277,64 @@ Continuous Integration:   When engineers submit their code, it's integrated into
 
 Bash commands
 
+bg                # causes a job that was stopped to go to the background
 cat               # show files
 cd                # change dir
 chmod             # change permissions on file
 cronjobs          # schedule based scripts on UNIX operating systems
+cut               # for each line in the given file, splits the line according to the given separator and prints the given fields (starting from 1)
+    cut -d seperator -f fields
+date              # prints the current date
 echo              # print 
-  echo $?           # print info on $-variable which contains the error messega (0 - success, > 0 - error)
+   echo $?            # print info on $-variable which contains the error messega (0 - success, > 0 - error)
 env               # show environment variables
 export            # create new environment variable and make it visible to all processes, e.g. export ENV_VARIABLE=env_var_to_set
+fg                # causes a job that was stopped or in the background to return to the foreground
+file              # prints type of given file
+free              # shows the amount of unused memory on the current system
+head              # prints first ten lines
 host              # return name to given ip address
+jobs: lists the jobs currently running or stopped
+less              # terminal paging program
 ls                # list contents of a directory
+ls -l
+
+permissions        number of inodes           owner     group     size of     last date of     name
+user group all     that point to the file        of the file      file        modification
+
+ps                # list all currently running processes
+    ps ax             # list all currently running processes in the running computer
+    ps e              # shows the environment for the processes listed
 pwd               # print working directory
 rm                # remove file(s)
+sort              # sort -n (sort numerically], -r (sort reverse)
+top               # shows the processes currently using the most CPU time (press "q" to quit) 
+tr                # translate first arg to second arg: tr ' ' '\n' -> replace all spaces by newlines
+uniq              # displays each match once, uniq -c prefixes each line with number of times the match occurred
+uptime            # shows how long the computer has been running
 wc                # counts number of words, lines, ...
 who               # prints the user who is currently logged in
+                  # prints the list of users currently logged into the computer
 
+
+
+output streams
+0>      STDIN stream
+1>      STDOUT stream
+2>      STDERR stream       # 2: file descriptor of the STDERR stream
+
+
+Signals: Tokens delivered to running processes to indicate a desired action
+Ctrl-C                  SIGINT (Program is finished cleanly)
+Ctrl-Z                  SIGSTOP (Program is stopped), restart program with 'fg'
+kill                    SIGTERM (terminate program)
+                        needs PID (process identifier) to address the program which shall be killed
+                        
+ps: lists the processes executing in the current terminal for the current user
+ps ax: lists all processes currently executing for all users  
+ps e: shows the environment for the processes listed  
+kill PID: sends the SIGTERM signal to the process identified by PID
+fg: causes a job that was stopped or in the background to return to the foreground
+bg: causes a job that was stopped to go to the background
+jobs: lists the jobs currently running or stopped
+top: shows the processes currently using the most CPU time (press "q" to quit)
