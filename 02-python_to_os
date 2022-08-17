@@ -230,7 +230,8 @@ class TestFunctionToTest(unittest.TestCase):        # write own test function th
         expected = "expected return value from function to test"
         self.assertEqual(function_to_test(testcase), expected)      # assertEqual is inherited from TestCase class
         
-# assert                                                        # depending on the state of the program an error is raised
+# assert                                                      # depending on the state of the program an error is raised
+                                                              # throws an Assertion Error
 assert type(username) == str, "username must be a string"     # also helpful for debugging
 
 # assertRaises                                                  # checks if an error is raised
@@ -273,12 +274,17 @@ Continuous Integration:   When engineers submit their code, it's integrated into
 
 Bash commands
 
+cat               # show files
+cd                # change dir
+chmod             # change permissions on file
 cronjobs          # schedule based scripts on UNIX operating systems
 echo              # print 
   echo $?           # print info on $-variable which contains the error messega (0 - success, > 0 - error)
 env               # show environment variables
 export            # create new environment variable and make it visible to all processes, e.g. export ENV_VARIABLE=env_var_to_set
 host              # return name to given ip address
+ls                # list contents of a directory
+pwd               # print working directory
 rm                # remove file(s)
 wc                # counts number of words, lines, ...
 who               # prints the user who is currently logged in
