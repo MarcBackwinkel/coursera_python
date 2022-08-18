@@ -277,6 +277,10 @@ Continuous Integration:   When engineers submit their code, it's integrated into
 
 Bash commands
 
+globs
+*
+?
+
 bg                # causes a job that was stopped to go to the background
 cat               # show files
 cd                # change dir
@@ -308,6 +312,8 @@ ps                # list all currently running processes
 pwd               # print working directory
 rm                # remove file(s)
 sort              # sort -n (sort numerically], -r (sort reverse)
+test              # evaluates the conditions received and exits with zero when they are true and with one when they're false
+    test -n           # tests if a string variable is empty or not
 top               # shows the processes currently using the most CPU time (press "q" to quit) 
 tr                # translate first arg to second arg: tr ' ' '\n' -> replace all spaces by newlines
 uniq              # displays each match once, uniq -c prefixes each line with number of times the match occurred
@@ -337,4 +343,58 @@ kill PID: sends the SIGTERM signal to the process identified by PID
 fg: causes a job that was stopped or in the background to return to the foreground
 bg: causes a job that was stopped to go to the background
 jobs: lists the jobs currently running or stopped
+
 top: shows the processes currently using the most CPU time (press "q" to quit)
+
+#=============================================================================================================================================================
+
+Bash Scripting
+
+#!/bin/bash
+
+var=value                                         # no spaces allowed here!
+export var_valid_of_program_code='other value'    # define a variable that is also valid in bash
+echo $var                                         # adress variable with $
+
+!arguments-------------------------------------------------------------------------------------------------------
+argument1=$1                         # access the first command line argument
+
+
+
+! conditionals: use exit status of funtion calls in bash---------------------------------------------------------
+! in bash scripting an exit value of 0 means success
+! also use "test" command in bash to check a certain condition to be true/false
+
+if grep 127.0.0.1 /etc/hosts; then         ! uses the exit status of the grep command, not the output of the grep command
+                                           ! but the outuput of the bash command will be written to the screen
+    echo "Everything OK"                   ! after the grep output, the conditional echo is displayed
+else
+    echo 'Error'
+fi
+
+if test -n "$PATH"; then ...; fi           ! test -n    tests if a string variable is empty or not
+! can also be written as
+if [ -n "$PATH" ]; then ...; fi             ! [ is an alias for test command; there needs to be a space before the closing bracket
+----------------------------------------------------------------------------------------------------
+WHILE-LOOP
+
+n=1
+while [ $n -le 5 ]; do
+    ...
+    ((n+=1))                     ! bash construct of double parentheses that lets us do arithemetic operations with our variables
+done
+
+n=1
+command=$1
+while ! command && [ $n -le 5 ]; do   ! command shall stand for a command that can be 0 (true) or >0 (false)
+                                        ! while loop will be executed as long as command is not true OR as long as n <= 5
+                                        ! or if the command fails we will retry to execute the command five times
+    sleep $n                          ! to give the system time before retrying the command, the system will sleep (shortly at beginning, then longer)
+    ((n+1))
+done
+-----------------------------------------------------------------------------------------------------
+FOR-LOOP
+
+for fruit in apple orange banana; do
+    echo "I like $fruit!"
+done
