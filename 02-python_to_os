@@ -281,6 +281,7 @@ globs
 *
 ?
 
+basename          # basename filename extension (e.g. basename index.HTM HTM) returns filename without extension
 bg                # causes a job that was stopped to go to the background
 cat               # show files
 cd                # change dir
@@ -312,6 +313,7 @@ ps                # list all currently running processes
 pwd               # print working directory
 rm                # remove file(s)
 sort              # sort -n (sort numerically], -r (sort reverse)
+tail              # show last 10 lines
 test              # evaluates the conditions received and exits with zero when they are true and with one when they're false
     test -n           # tests if a string variable is empty or not
 top               # shows the processes currently using the most CPU time (press "q" to quit) 
@@ -395,6 +397,23 @@ done
 -----------------------------------------------------------------------------------------------------
 FOR-LOOP
 
-for fruit in apple orange banana; do
+for fruit in apple orange banana; do          # list is seperated by spaces
     echo "I like $fruit!"
 done
+
+! rename file HTM -> html
+for  file in *.HTM; do
+    name=$(basename "$file" .HTM)              !  $file is surrounded by "" so the command will work, even if the filename has spaces within
+    mv "$file" "$name.html"                    ! for testing use echo: 'echo mv "$file" "$name.html"' to see what the script will do
+done
+
+--------------------------------------------------------------------------------------------------
+/var/log/syslog                         ! Position of System logfile !
+
+tail /var/log/syslog                             ! show last 10 lines of system log-file to get to know the structure of it
+tail /var/log/syslog  | cut -d' ' -f5-           ! split line with spaces ( -d' ') and print field no. 5 and everything that comes after it (-f5-)
+
+cut -d' ' -f5- /var/log/syslog | sort | uniq -c | sort -nr | head
+                                                 ! find out which process message occur most often
+                                                 
+                                                 
