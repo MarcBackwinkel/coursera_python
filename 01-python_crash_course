@@ -50,6 +50,12 @@ del dict[key]
 key in dict                        # check if given key is in a dictionary
 key not in dict
 
+# sort dictionary
+sorted(dict.items())               # sorts using the items' keys
+import operator
+sorted(dict.items(), key=operator.itemgetter(0))      # sorts using the items' keys
+sorted(dict.items(), key=operator.itemgetter(1))      # sorts using the items' values
+sorted(dict.items(), key=operator.itemgetter(1), reverse=True)    # sorts using the items' values in reverse order
 
 for-Loop
 for i in range(number):
