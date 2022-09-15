@@ -10,8 +10,6 @@ git directory  - contains the history of all the files and changes
 working tree   - contains current state of the project and all current versions of the files
 staging area   - all changes that go into next commit
 
-HEAD           - represents currently checked-out snapshot (like a bookmark; pointer to the current branch)
-
 tracked / untracked files   - tracked files are part of the snapshots (git commit) while untracked aren't (yet)
                             - git add: adds file to tracked files
 each file can be in one state: 
@@ -25,6 +23,26 @@ file is                 tracked     committed    modified       staged      comm
              OR
     git init/clone - git add file - git commit - edit file -                git commit -a
 file is                 tracked     committed    modified                  staged & committed
+
+Branches
+HEAD           - represents currently checked-out snapshot (like a bookmark; pointer to the current branch)
+branches point to commits as well
+in git log it is shown to which commit ids the different branches (and HEAD) point
+here it is clear which branch is ahead and which one is behind
+
+Merging:
+fast-forward merge
+    this kind of merge takes place if both branches share the same history of commits so one branch is just ... commits before the other one (quite linear)
+    git just updates the pointers of the branches to point to the same commit-id
+three-way merge
+    history of git log diverges on both branches
+    Git will tie the branch histories together with a new commit and merge the snapshots at the two branch tips with the most recent common ancestor, 
+    the commit before the divergence. Git tries to figure out how to combine both snapshots. If the changes were made in different files, or in 
+    different parts of the same file, Git will take both changes and put them together in the result. If instead the changes are made on the same part 
+    of the same file, Git won't know how to merge those changes, and the attempt will result in a merge conflict.
+
+Merge Conflict
+    git shows if there is a merge conflict; then use 'git status'
 
 commit message: 1 line < 51 characters - 1 blank line - detailed description of changes in several lines but each line < 72 characters
 
@@ -61,6 +79,7 @@ git checkout file                    # restore working tree files
                                      # revert file to latest stored snapshot; works on unstaged changes (not git added)
                                      # it reverts changes to modified files before they are staged
 git checkout BRANCH                  # switch to another branch
+         git checkout -b new_BRANCH  # create new branch and switch to it
 
          git checkout -p file        # checkout individual changes; asks change by change if you want to go to the last snapshot
 git reset HEAD file                  # basically resets the repo, throwing away some changes
@@ -70,6 +89,13 @@ git reset HEAD file                  # basically resets the repo, throwing away 
 
 git revert HEAD                      # rollback to previous snapshot as a new commit
 git revert commit_id                 # rollback to defined commit id
+
+
+git branch                           # shows existing branch structure of repository, actual branch is marked with asterisk
+git branch new_branch_name           # create new branch
+git branch -d branch_name            # delete branch; use 'git branch -D branch_name' if branch is not fully merged 
+
+git merge branch_name                # merges the working directory of the branch_name into the actual branch we are in, e.g. master
 --------------------------------------------------------------------------------------------------------------------------------------------
 .git
       working directory, created with git init or git clone
