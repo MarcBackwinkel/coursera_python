@@ -10,7 +10,7 @@ git directory  - contains the history of all the files and changes
 working tree   - contains current state of the project and all current versions of the files
 staging area   - all changes that go into next commit
 
-HEAD           - shows currently checked-out snapshot (like a bookmark; pointer to the current branch)
+HEAD           - represents currently checked-out snapshot (like a bookmark; pointer to the current branch)
 
 tracked / untracked files   - tracked files are part of the snapshots (git commit) while untracked aren't (yet)
                             - git add: adds file to tracked files
@@ -18,7 +18,7 @@ each file can be in one state:
     - Modified    (changes - i.e. modifying, adding, deleting lines - made to file that has not been committed yet)
     - Staged      (files are ready for commitment; all staged files will be part of next commit) via git add
     - Commmitted  (changes are stored in VCS)
-    
+
 git Workflow
     git init/clone - git add file - git commit - edit file - git add file - git commit
 file is                 tracked     committed    modified       staged      committed
@@ -28,6 +28,8 @@ file is                 tracked     committed    modified                  stage
 
 commit message: 1 line < 51 characters - 1 blank line - detailed description of changes in several lines but each line < 72 characters
 
+------git commands------------------------------------------------------------------------------------------------------------------------
+
 git config --global user.name 'Marc Backwinkel'
 git config --global user.email 'marc.backwinkel@gmail.com'
         git config -l         # list actual config
@@ -36,9 +38,42 @@ git init                             -> creates .git (git directory), initialize
   or
 git clone                            -> copies .git locally (git directory)
 git add file_to_add_to_project.py    # adds file to project and to staging area
+          git add *                  # add all files to staging area
+          git add -p                 # git will add for every change to be taken over
+git mv old_name new_name             # file is renamed in git; change must be committed
+git rm file                          # deletes file from git directory; change needs to be committed 
 git status                           # show outstanding changes
 git commit                           # save changes; git creates snapshots of project on each commit
-         git commit -a               # shortcut to stage any changes to TRACKED files and commit them in one step
-         git commit -m 'commit message'     # just for short commit messages
+         git commit -a               # shortcut to stage any changes to TRACKED files and commit them in one step; untracked files cannot be included
+         git commit --amend          # overwrites previous commit (includes last commit and this commit); further commit message can be modified
+                                     # ONLY use git commit --amend on local repositories as it may confuse on public repositories
+         git commit -m 'commit message'     # only use for short commit messages
 git log                              # show all commit messages
-git diff file                        # shows differences between file.last_snapshot file.actual_version
+         git log -p                  # equivalent to diff -u; shows differences between different versions
+         git log -p -2               # show last two items from log file
+         git log --stat              # shows log and which files were changed and how many lines were added / removed
+git diff file                        # shows differences between file.last_snapshot file.actual_version; shows only UNSTAGED changes
+         git diff --staged           # show changes that are staged but not committed
+git show commit_id                  # shows information for version_id and the corresponding patch
+
+
+git checkout file                    # restore working tree files
+                                     # revert file to latest stored snapshot; works on unstaged changes (not git added)
+                                     # it reverts changes to modified files before they are staged
+git checkout BRANCH                  # switch to another branch
+
+         git checkout -p file        # checkout individual changes; asks change by change if you want to go to the last snapshot
+git reset HEAD file                  # basically resets the repo, throwing away some changes
+                                     # remove file from staging area compared to last snapshot
+                                     # reset changes to what is in the current snapshot
+         git reset -p                # git asks for which specific changes shall be reset
+
+git revert HEAD                      # rollback to previous snapshot as a new commit
+git revert commit_id                 # rollback to defined commit id
+--------------------------------------------------------------------------------------------------------------------------------------------
+.git
+      working directory, created with git init or git clone
+.gitignore
+     file in root directory that contains files which are ignored by git status
+     echo file_to_ignore.txt > .gitignore
+     .gitignore needs to be added (git add .gitignore) and committed (git commit)
