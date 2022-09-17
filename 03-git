@@ -4,7 +4,7 @@ patch file1 < changes.diff
 
 
 ---------------------------------------------------------------------------------------------------------------------------------
-git
+git / github
 
 distributed - each developer has a copy of the whole repository on their local machine
 
