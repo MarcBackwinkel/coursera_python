@@ -6,6 +6,8 @@ patch file1 < changes.diff
 ---------------------------------------------------------------------------------------------------------------------------------
 git
 
+distributed - each developer has a copy of the whole repository on their local machine
+
 git directory  - contains the history of all the files and changes
 working tree   - contains current state of the project and all current versions of the files
 staging area   - all changes that go into next commit
@@ -43,6 +45,9 @@ three-way merge
 
 Merge Conflict
     git shows if there is a merge conflict; then use 'git status'
+    git sets merger markers in the conflict file; edit conflicting file and chose which parts to take over
+    add changed file to staged files: 'git add file_without_conflict'
+    after solving the conflict, execute 'git commit'
 
 commit message: 1 line < 51 characters - 1 blank line - detailed description of changes in several lines but each line < 72 characters
 
@@ -50,11 +55,13 @@ commit message: 1 line < 51 characters - 1 blank line - detailed description of 
 
 git config --global user.name 'Marc Backwinkel'
 git config --global user.email 'marc.backwinkel@gmail.com'
+git config --global credential.helper cache                 # caches our credentials for a time window (15 Min) so that we don't need to enter our password 
+                                                            #     with every interaction to github; alternative to SSH key pair
         git config -l         # list actual config
 
 git init                             -> creates .git (git directory), initializes git repository
   or
-git clone                            -> copies .git locally (git directory)
+git clone url                        -> copies .git locally (git directory)
 git add file_to_add_to_project.py    # adds file to project and to staging area
           git add *                  # add all files to staging area
           git add -p                 # git will add for every change to be taken over
@@ -66,13 +73,16 @@ git commit                           # save changes; git creates snapshots of pr
          git commit --amend          # overwrites previous commit (includes last commit and this commit); further commit message can be modified
                                      # ONLY use git commit --amend on local repositories as it may confuse on public repositories
          git commit -m 'commit message'     # only use for short commit messages
+git push                             # sends all collected snapshot to the online repository; all changes must be committed
+git pull                             # retrieve new changes from the repository
 git log                              # show all commit messages
          git log -p                  # equivalent to diff -u; shows differences between different versions
          git log -p -2               # show last two items from log file
          git log --stat              # shows log and which files were changed and how many lines were added / removed
+         git log --graph --oneline   # shows history of commits and branches in a graphical view
 git diff file                        # shows differences between file.last_snapshot file.actual_version; shows only UNSTAGED changes
          git diff --staged           # show changes that are staged but not committed
-git show commit_id                  # shows information for version_id and the corresponding patch
+git show commit_id                   # shows information for version_id and the corresponding patch
 
 
 git checkout file                    # restore working tree files
@@ -96,6 +106,10 @@ git branch new_branch_name           # create new branch
 git branch -d branch_name            # delete branch; use 'git branch -D branch_name' if branch is not fully merged 
 
 git merge branch_name                # merges the working directory of the branch_name into the actual branch we are in, e.g. master
+        git merge --abort            # escape hatch: stop the merge and reset the files in the working tree back to the previous commit 
+                                     #               before the merge ever happened
+
+
 --------------------------------------------------------------------------------------------------------------------------------------------
 .git
       working directory, created with git init or git clone
