@@ -118,3 +118,15 @@ git merge branch_name                # merges the working directory of the branc
      file in root directory that contains files which are ignored by git status
      echo file_to_ignore.txt > .gitignore
      .gitignore needs to be added (git add .gitignore) and committed (git commit)
+     
+---------------------------------------------------------------------------------------------------------------------------------------------
+SSH key
+
+# configure SSH key-pair for access to github
+ssh-keygen -t rsa -b 4096 -C "your_email@example.com"
+# Copy the public SSH key to GitHub
+--> Copy the contents of the to your SSH keys to your GitHub account settings (https://github.com/settings/keys).
+# Test the SSH key:
+ssh -T git@github.com
+--> Change directory into the local clone of your repository (if you're not already there) and run:
+git remote set-url origin git@github.com:username/your-repository.git
