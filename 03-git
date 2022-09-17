@@ -36,6 +36,7 @@ Merging:
 fast-forward merge
     this kind of merge takes place if both branches share the same history of commits so one branch is just ... commits before the other one (quite linear)
     git just updates the pointers of the branches to point to the same commit-id
+
 three-way merge
     history of git log diverges on both branches
     Git will tie the branch histories together with a new commit and merge the snapshots at the two branch tips with the most recent common ancestor, 
