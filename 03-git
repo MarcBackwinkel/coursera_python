@@ -28,6 +28,8 @@ file is                 tracked     committed    modified                  stage
 
 Branches
 HEAD           - represents currently checked-out snapshot (like a bookmark; pointer to the current branch)
+origin/master  - master branch of remote repository "origin"
+head/master    - shows to where the HEAD is pointing in online repo
 branches point to commits as well
 in git log it is shown to which commit ids the different branches (and HEAD) point
 here it is clear which branch is ahead and which one is behind
@@ -43,6 +45,10 @@ three-way merge
     the commit before the divergence. Git tries to figure out how to combine both snapshots. If the changes were made in different files, or in 
     different parts of the same file, Git will take both changes and put them together in the result. If instead the changes are made on the same part 
     of the same file, Git won't know how to merge those changes, and the attempt will result in a merge conflict.
+    
+explicit merge:
+    merge that creates a new merge commit. This alters the commit history and explicitly shows where a merge was executed. 
+    The merge commit content is also explicit in the fact that it shows which commits were the parents of the merge commit.
 
 Merge Conflict
     git shows if there is a merge conflict; then use 'git status'
@@ -75,16 +81,25 @@ git commit                           # save changes; git creates snapshots of pr
                                      # ONLY use git commit --amend on local repositories as it may confuse on public repositories
          git commit -m 'commit message'     # only use for short commit messages
 git push                             # sends all collected snapshot to the online repository; all changes must be committed
-git pull                             # retrieve new changes from the repository
+git pull                             # fetches remote updates from the repository and merges instantly
+git fetch                            # only fetches remote updates from the branch I am on
+                                     # download remote branches from remote repositories without merging the content with your current workspace automatically
+git remote                           # list remote repos
+         git remote -v               # list remote repos verbosely / shows urls from which the data is fetched / to which the data is pushed
+         git remote show origin      # Remote repositories have a name assigned to them, by default, the assigned name is origin.
+                                     # shows more details to the remote with the name "origin" / describes a single remote repo
+         git remote update           # fetches the most up-to-date objects from the whole repo / fetches all changes from the online repo incl. branches
+                                     # get the contents of a remote branch without automatically merging
+
 git log                              # show all commit messages
          git log -p                  # equivalent to diff -u; shows differences between different versions
          git log -p -2               # show last two items from log file
          git log --stat              # shows log and which files were changed and how many lines were added / removed
          git log --graph --oneline   # shows history of commits and branches in a graphical view
+         git log origin/master       # show log for github branch origin/master
 git diff file                        # shows differences between file.last_snapshot file.actual_version; shows only UNSTAGED changes
          git diff --staged           # show changes that are staged but not committed
 git show commit_id                   # shows information for version_id and the corresponding patch
-
 
 git checkout file                    # restore working tree files
                                      # revert file to latest stored snapshot; works on unstaged changes (not git added)
@@ -99,12 +114,13 @@ git reset HEAD file                  # basically resets the repo, throwing away 
          git reset -p                # git asks for which specific changes shall be reset
 
 git revert HEAD                      # rollback to previous snapshot as a new commit
-git revert commit_id                 # rollback to defined commit id
-
+         git revert commit_id        # rollback to defined commit id
 
 git branch                           # shows existing branch structure of repository, actual branch is marked with asterisk
-git branch new_branch_name           # create new branch
-git branch -d branch_name            # delete branch; use 'git branch -D branch_name' if branch is not fully merged 
+         git branch new_branch_name  # create new branch
+         git branch -d branch_name   # delete branch; use 'git branch -D branch_name' if branch is not fully merged 
+         git branch -r               # lists remote branches; can be combined with other branch arguments to manage remote branches
+                                     #      shows which branch is tracked by github
 
 git merge branch_name                # merges the working directory of the branch_name into the actual branch we are in, e.g. master
         git merge --abort            # escape hatch: stop the merge and reset the files in the working tree back to the previous commit 
