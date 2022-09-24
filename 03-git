@@ -81,6 +81,7 @@ git config --global credential.helper cache                 # caches our credent
 git init                             -> creates .git (git directory), initializes git repository
   or
 git clone url                        -> copies .git locally (git directory)
+          git clone url dir_name     # specify into which directory the url shall be cloned
 git add file_to_add_to_project.py    # adds file to project and to staging area
           git add *                  # add all files to staging area
           git add -p                 # git will add for every change to be taken over
@@ -95,6 +96,7 @@ git commit                           # save changes; git creates snapshots of pr
 git push                             # sends all collected snapshot to the online repository; all changes must be committed
                                      # our local repo becomes new remote repo with HEAD pointing to it; then - and only then - HEAD point to e.g. origin/master and 
                                                          # our local master
+   git push my_branch repo_branch    # specify which local branch shall be pushed to which repo branch
          git push --delete origin branch_name     # delete branch in online repository
          git push -u origin branch_name     # first push to a new github branch; 
                                             # -u to create the branch upstream, origin: push to origin repo, we are pushing the branch_name branch
