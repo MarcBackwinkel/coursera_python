@@ -52,11 +52,23 @@ explicit merge:
 
 Merge Conflict
     git shows if there is a merge conflict; then use 'git status'
-    git sets merger markers in the conflict file; edit conflicting file and chose which parts to take over
+    git sets merger markers (>>>>, ====, <<<<) in the conflict file; remove markers and edit conflicting file to choose which parts are taken over
     add changed file to staged files: 'git add file_without_conflict'
     after solving the conflict, execute 'git commit'
 
 commit message: 1 line < 51 characters - 1 blank line - detailed description of changes in several lines but each line < 72 characters
+
+
+------------------------------------------------------------------------------------------------------------------------------------------
+Best Practices for Collaboration
+
+- Always synchronize your branches before starting any work on your own.
+- Avoid having very large changes that modify a lot of different things.
+- When working on a big change, it makes sense to have a seperat feature branch.
+- Regularly merge changes made on the master branch back onto the feature branch.
+- Have the latest version of the project in the master branch and a stable version of the project on a separate branch.
+- You should not rebase changes that have been pushed to remote repos.
+- Having good commit messages is important.
 
 ------git commands------------------------------------------------------------------------------------------------------------------------
 
@@ -81,8 +93,13 @@ git commit                           # save changes; git creates snapshots of pr
                                      # ONLY use git commit --amend on local repositories as it may confuse on public repositories
          git commit -m 'commit message'     # only use for short commit messages
 git push                             # sends all collected snapshot to the online repository; all changes must be committed
+                                     # our local repo becomes new remote repo with HEAD pointing to it; then - and only then - HEAD point to e.g. origin/master and 
+                                                         # our local master
+         git push --delete origin branch_name     # delete branch in online repository
+         git push -u origin branch_name     # first push to a new github branch; 
+                                            # -u to create the branch upstream, origin: push to origin repo, we are pushing the branch_name branch
 git pull                             # fetches remote updates from the repository and merges instantly
-git fetch                            # only fetches remote updates from the branch I am on
+git fetch                            # only fetches remote updates from the branch I am on e.g. fetches updates from origin/master when I am in my local master branch
                                      # download remote branches from remote repositories without merging the content with your current workspace automatically
 git remote                           # list remote repos
          git remote -v               # list remote repos verbosely / shows urls from which the data is fetched / to which the data is pushed
@@ -94,9 +111,12 @@ git remote                           # list remote repos
 git log                              # show all commit messages
          git log -p                  # equivalent to diff -u; shows differences between different versions
          git log -p -2               # show last two items from log file
+         git log -p origin/master    # see changes of a different branch
          git log --stat              # shows log and which files were changed and how many lines were added / removed
          git log --graph --oneline   # shows history of commits and branches in a graphical view
+         git log --graph --oneline --all   # same as above for all branches
          git log origin/master       # show log for github branch origin/master
+         
 git diff file                        # shows differences between file.last_snapshot file.actual_version; shows only UNSTAGED changes
          git diff --staged           # show changes that are staged but not committed
 git show commit_id                   # shows information for version_id and the corresponding patch
@@ -126,6 +146,12 @@ git merge branch_name                # merges the working directory of the branc
         git merge --abort            # escape hatch: stop the merge and reset the files in the working tree back to the previous commit 
                                      #               before the merge ever happened
 
+git rebase master                    # rebase current branch against master, change base commit that is used for our branch 
+                                     # reorders branch history by setting our branch in linear history to the master branch
+                                     # changes in master branch and in current branch may not be merged automatically and have to be solved manually
+                                             # after solving a rebase conflict use git add file and git rebase --continue
+                                     # after that get rid of our "old" branch locally (git branch -d) and remotely (git push --delete)
+                       # Rebasing instead of merging rewrites history and maintains linearity!
 
 --------------------------------------------------------------------------------------------------------------------------------------------
 .git
