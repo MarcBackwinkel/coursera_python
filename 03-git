@@ -105,6 +105,7 @@ git pull                             # fetches remote updates from the repositor
 git fetch                            # only fetches remote updates from the branch I am on e.g. fetches updates from origin/master when I am in my local master branch
                                      # download remote branches from remote repositories without merging the content with your current workspace automatically
 git remote                           # list remote repos
+         git remote upstream url     # use different upstream url for forked repos
          git remote -v               # list remote repos verbosely / shows urls from which the data is fetched / to which the data is pushed
          git remote show origin      # Remote repositories have a name assigned to them, by default, the assigned name is origin.
                                      # shows more details to the remote with the name "origin" / describes a single remote repo
