@@ -1,0 +1,67 @@
+Troubleshooting         The process of identifying, analyzing and solving problems.
+Debugging               The process of identifying, analyzing and removing bugs in a system.
+
+Reproduction Case       A clear description of how and when the problem appears; a way to verify if the problem is present or not
+Root Cause              Understanding the root cause is essential for performing the long-term remediation
+    Hypothesis          Whenever possible, we should check our hyothesis in a test environment, instead of our production envirenment 
+                                that our users are working with. 
+System Calls            Calls that the programs running on our computer make to the running kernel
+Observer Effect         Oberving a phenomenon alters the phenomenon
+Power cycling           releases resources stored in cache or memory, which gets rid of the problem
+
+Bisecting               cut problem in half and test each half seperately
+                        cut possiblities for crash in half and test first half
+                                 if first half causes the failure, the fault is in this group; else it's in the second
+                                 continue further
+                        there is also a command "git bisect"!?
+
+Problem Solving Steps
+1. Getting Information
+2. Finding the root cause
+3. Performing the necessary remediation
+
+----------------------------------------------------------------------------------------------------------------------------
+Tools
+
+kill                          # kills a process
+    kill -stop                # stops a program which can be continued or terminated
+strace                        # logs system calls, e.g. "strace ./run_program.py"
+    strace -o file program    # store output to a file
+iftop                         # shows network traffic
+ionice                        # make our problem system reduce its priority
+iostat                        # shows statistics on the input/output operations    
+iotop                         # shows which processes use the most input and output
+nice                          # reduce priority of a process
+top                           # shows state of computer and processes using the most cpu
+                              # Load Average: shows how long a processer is busy in a given minute with 1 meaning it was busy all the time
+                              #               normally this number should not be greater than the number of processors
+                              #               if it is higher than the computer is overloaded
+vmstat                        # shows statistics on the virtual memory operations
+
+
+tcpdump                       # powerful command-line analyzer that captures or "sniffs" TCP/IP packets
+wireshark                     # open source tool for profiling network traffic and analyzing TCP/IP packets
+
+
+----------------------------------------------------------------------------------------------------------------------------
+Getting Information
+
+- What were you trying to do? 
+- What steps did you follow? 
+- What was the expected result? 
+- What was the actual result?
+
+- Consider simplest explanation first!
+
+System Logs:
+  - on Linux:       /var/log/syslog
+                    .xsession-errors
+  - on Mac OS       /Library/Logs
+  - on Windows      Event Viewer
+  
+-----------------------------------------------------------------------------------------------------------------------------
+Linear Search        search from top to bottom
+Binary Search        list must be sorted (sorting takes no time), but honestly does not make any sense if just one element is searched
+                     compare to the middle element
+                     > search in the second half, especially compare the middle element of the second half
+                     < search in the first half, especially compare the middle element of the first half
