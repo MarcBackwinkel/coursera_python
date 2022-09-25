@@ -58,7 +58,6 @@ Merge Conflict
 
 commit message: 1 line < 51 characters - 1 blank line - detailed description of changes in several lines but each line < 72 characters
 
-
 ------------------------------------------------------------------------------------------------------------------------------------------
 Best Practices for Collaboration
 
@@ -96,8 +95,10 @@ git commit                           # save changes; git creates snapshots of pr
 git push                             # sends all collected snapshot to the online repository; all changes must be committed
                                      # our local repo becomes new remote repo with HEAD pointing to it; then - and only then - HEAD point to e.g. origin/master and 
                                                          # our local master
-   git push my_branch repo_branch    # specify which local branch shall be pushed to which repo branch
+         git push origin             # pushes current branch I am in to the origin (remote repo)
+         git push origin my_branch   # specify which local branch shall be pushed to origin (remote repo)
          git push --delete origin branch_name     # delete branch in online repository
+         git push -f                 # force push of commit; commits in github are overwritten by our local copy of the repo
          git push -u origin branch_name     # first push to a new github branch; 
                                             # -u to create the branch upstream, origin: push to origin repo, we are pushing the branch_name branch
 git pull                             # fetches remote updates from the repository and merges instantly
@@ -112,7 +113,7 @@ git remote                           # list remote repos
 
 git log                              # show all commit messages
          git log -p                  # equivalent to diff -u; shows differences between different versions
-         git log -p -2               # show last two items from log file
+         git log -p -2               # show last two commits from log file
          git log -p origin/master    # see changes of a different branch
          git log --stat              # shows log and which files were changed and how many lines were added / removed
          git log --graph --oneline   # shows history of commits and branches in a graphical view
@@ -154,7 +155,13 @@ git rebase master                    # rebase current branch against master, cha
                                              # after solving a rebase conflict use git add file and git rebase --continue
                                      # after that get rid of our "old" branch locally (git branch -d) and remotely (git push --delete)
                        # Rebasing instead of merging rewrites history and maintains linearity!
-
+        git rebase -i                # interactive rebasing; actions can be changed how rebase works
+                                     # git rebase is an automatic workflow where every commit is "pick"ed for rearrangement
+                                     # git rebase -i by default picks all commits of our current branch, but pick can be changed
+                                     # e.g. squash lets us combine several commits into one (first commit is picked, second, third, fourth, ... are squashed)
+                            - pick: picks a commit for rebasing
+                            - squash: meld commit with last picked one; commit messages are both kept
+                            - fixup: like squash, but discard this commit's log message
 --------------------------------------------------------------------------------------------------------------------------------------------
 .git
       working directory, created with git init or git clone
@@ -174,3 +181,55 @@ ssh-keygen -t rsa -b 4096 -C "your_email@example.com"
 ssh -T git@github.com
 --> Change directory into the local clone of your repository (if you're not already there) and run:
 git remote set-url origin git@github.com:username/your-repository.git
+
+------------------------------------------------------------------------------------------------------------------------------------------
+Pull Requests
+
+Forking:      A way of creating a copy of the given repository so that it belongs to our user
+Pull Request: A commit or series of commits that you send to the owner of the repository so that they incorporate it into their tree
+
+Workflow:
+1. Fork repo on github (how is this fork updated if the original repo is changed?)
+2. Clone forked repo to our computer 
+3. Create new branch 
+4. Maintain code in new branch in local fork and commit any changes to it
+5. Push code / new branch (push -u origin branch_name) to our fork
+6. Issue Pull Request on github
+7. eventually Update Pull Request (re-do a.m. loop starting Step 4)
+8. eventually rebase new branch to fit maintainers needs (see above rebase -i)
+
+------------------------------------------------------------------------------------------------------------------------------------------
+Code Review
+
+Code Review: Going through someone else's code, documentation or configuration and checking that it all makes sense and follows the expected patterns
+Nit:         a trivial comment or suggestion
+
+------------------------------------------------------------------------------------------------------------------------------------------
+Issue Tracker
+
+github-Issue-Tracker
+- each Issue has an Issue Number (starts with #, e.g. #2 for Issue Number 2)
+- when committing a change in git, those Issue Number can be referenced in the commit message long text 
+  "Closes #2" will automatically close the issue once the change is integrated into the main tree
+
+------------------------------------------------------------------------------------------------------------------------------------------
+CI/CD (Continuous Integration / Continuous Delivery)
+
+Continuous Integration System (CI)      will build and test our code every time there is a change
+Continuous Deployment / Delivery (CD)   Once we have our code automatically built and tested, the next automation step is continuous deployment which is 
+                                           sometimes called continuous delivery or CD.
+                                        Continuous Delivery means new code is often deployed with the goal of avoiding rollouts with lots of changes
+                                           between two versions / CD means Update with incremental rollouts
+
+Concept of CI/CD:
+- Pipelines       specify the steps that need to run to get the result you want
+- Artifacts       the name used to describe any files that are generated as part of the pipeline
+
+Security hints for CI/CD:
+- make sure the authorized entities for the test servers are not the same entities authorized to deploy on the production servers
+- always have a plan to recover your access in case your pipeline gets compromised
+
+Systems for CI/CD: Jenkins, Travis (wwww.travis-ci.com)
+
+                                           
+                                           
