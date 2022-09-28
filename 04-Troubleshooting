@@ -14,6 +14,12 @@ Bisecting               cut problem in half and test each half seperately
                                  if first half causes the failure, the fault is in this group; else it's in the second
                                  continue further
                         there is also a command "git bisect"!?
+                        
+Cache                   Stores data in a form that is faster to access than its original form
+                        e.g. Web Proxy: stores documents, videos, pictures often downloaded from the Internet
+                        e.g. DNS-Services: store IP adresses for urls
+Memory Leak             Memory which is no longer needed is not getting released
+
 
 Problem Solving Steps
 1. Getting Information
@@ -23,15 +29,27 @@ Problem Solving Steps
 ----------------------------------------------------------------------------------------------------------------------------
 Tools
 
+ab                            # Apache Benchmark-Tool for benchmarking HTTP server
+    ab -n 500 url             # get average timing of 500 requests
 kill                          # kills a process
-    kill -stop                # stops a program which can be continued or terminated
+    kill -CONT                # continue stopped program, if program is still running, nothing will happen
+    kill -STOP                # stops a program which can be continued or terminated
+killall -STOP program_name    # stops program(s) with program_name, but does not kill them
 strace                        # logs system calls, e.g. "strace ./run_program.py"
     strace -o file program    # store output to a file
 iftop                         # shows network traffic
 ionice                        # make our problem system reduce its priority
 iostat                        # shows statistics on the input/output operations    
 iotop                         # shows which processes use the most input and output
-nice                          # reduce priority of a process
+locate                        # find a given file
+nice                          # start process with a different priority
+pidof                         # receives a process name and returns all corresponding process ids
+ps
+    ps ax                     # show all running processes on computer
+renice                        # change priority of a running process
+                              #           the lower the process priority number the higher the priority; typcial numbers go from 0 - 19
+                              #           by default, processes start with a priority of 0
+renice                        
 top                           # shows state of computer and processes using the most cpu
                               # Load Average: shows how long a processer is busy in a given minute with 1 meaning it was busy all the time
                               #               normally this number should not be greater than the number of processors
@@ -43,6 +61,10 @@ tcpdump                       # powerful command-line analyzer that captures or 
 wireshark                     # open source tool for profiling network traffic and analyzing TCP/IP packets
 
 
+# Script to continue STOPPED processes, one by one
+# Continue first process (pid) and wait 1 second; continue process again, wait, ... until first pid does not exist any longer; head one to second pid
+for pid in $(pidof ffmpeg); do while kill -CONT $pid; do sleep 1; done; done
+
 ----------------------------------------------------------------------------------------------------------------------------
 Getting Information
 
@@ -50,6 +72,10 @@ Getting Information
 - What steps did you follow? 
 - What was the expected result? 
 - What was the actual result?
+
+Find out, why computer is slow?
+1. WHEN is the computer slow?
+2. 
 
 - Consider simplest explanation first!
 
