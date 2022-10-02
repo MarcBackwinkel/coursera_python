@@ -49,7 +49,7 @@ ps
 renice                        # change priority of a running process
                               #           the lower the process priority number the higher the priority; typcial numbers go from 0 - 19
                               #           by default, processes start with a priority of 0
-renice                        
+        renice priority pid   # e.g. for pid in $(pidof ffmpeg); do renice 19 $pid; done                
 top                           # shows state of computer and processes using the most cpu
                               # Load Average: shows how long a processer is busy in a given minute with 1 meaning it was busy all the time
                               #               normally this number should not be greater than the number of processors
@@ -75,7 +75,7 @@ Getting Information
 
 Find out, why computer is slow?
 1. WHEN is the computer slow?
-2. 
+
 
 - Consider simplest explanation first!
 
@@ -91,3 +91,91 @@ Binary Search        list must be sorted (sorting takes no time), but honestly d
                      compare to the middle element
                      > search in the second half, especially compare the middle element of the second half
                      < search in the first half, especially compare the middle element of the first half
+
+
+-----------------------------------------------------------------------------------------------------------------------------
+Efficient Code
+
+- we should always start by writing clear code that does what it should and only try to make it faster if we realize that it's not fast enough
+- trying to optimize every second out of a script is probably not worth your time.
+- If we want our code to finish faster, we need to make our computer do less work, by
+            - storing data that was already calculated to avoid calculating it again 
+            - using the right data structures for the problem and 
+            - reorganizing the code so that the computer can stay busy while waiting for information from slow sources like disk or over the network
+            
+Profiler            is a tool that measures the resources that our code is using, giving us a better understanding of what's going
+                    -> use gprof to analyze a C program but use the c-Profile module to analyze a Python program
+                
+expensive actions   are those that take a long time to complete
+
+Lists
+
+    Lists are sequences of elements. We can add, remove, or modify the elements in them. We can iterate through the whole list to operate on each of 
+    the elements. Different programming languages call them differently. 
+    The structure is called ArrayList in Java, Vector in C++, Array in Ruby, and Slice in Go.
+
+    fast 
+        to add or remove elements at the end. 
+    slow
+        But adding or removing elements in the middle can be slow because all the elements that follow need to be repositioned. 
+    fast
+        It's fast to access the element in a specific position in the list, 
+    slow
+        but finding an element in an unknown position requires going through the whole list. This can be super slow if the list is long. 
+
+Dictionary        
+ 
+    Dictionary store key value pairs. We add data by associating a value to a key. Then, we retrieve a value by looking up a specific key. 
+    They are called HashMap in Java, Unordered Map in C++, Hash in Ruby, and Map in Go. 
+     
+     fast
+         super-fast for looking up keys. Once we have our data stored in a dictionary, we can find the value associated to a key in just one operation. 
+         
+==> If you need to access elements by position or will always iterate through all the elements, use a list to store them. 
+==> If we need to look up the elements using a key, we'll use a dictionary.
+
+
+Expansive Loops ------------------------
+If you do an expensive operation inside a loop, you multiply the time it takes to do the expensive operation by the amount of times you repeat the loop
+
+- Make sure that the list of elements that you're iterating through is only as long as you really need it to be
+- break out of the loop once you found what you were looking for (using "break" in python)
+- the right solution for one problem might not be right for a different problem
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
