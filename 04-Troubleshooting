@@ -31,6 +31,8 @@ Tools
 
 ab                            # Apache Benchmark-Tool for benchmarking HTTP server
     ab -n 500 url             # get average timing of 500 requests
+gdb                           # debugger for python programs
+    gdb -c core               # debug a core dump after a system crash 
 kill                          # kills a process
     kill -CONT                # continue stopped program, if program is still running, nothing will happen
     kill -STOP                # stops a program which can be continued or terminated
@@ -50,6 +52,8 @@ netstat                       # gives a bunch of information about our network c
     netstat -p                # print the process ID and name to which each socket belongs. 
                               # eg. sudo netstat -nlp | grep 80    >  grep for Port 80 
 nice                          # start process with a different priority
+pdb3                          # python debugger
+    pdb3 <program> <params>   # activate debugger on python script
 pidof                         # receives a process name and returns all corresponding process ids
 ps
     ps ax                     # show all running processes on computer
@@ -67,6 +71,7 @@ top                           # shows state of computer and processes using the 
                               # Load Average: shows how long a processer is busy in a given minute with 1 meaning it was busy all the time
                               #               normally this number should not be greater than the number of processors
                               #               if it is higher than the computer is overloaded
+ulimit -c unlimited           # tell OS to create core files
 vmstat                        # shows statistics on the virtual memory operations
 
 
@@ -279,16 +284,42 @@ System is crashed, how to investigate:
     - use netstat (s.a.) to find out which software runs on that port, e.g. nginx
     - look for configuration files (/etc/<application_name>), e.g. /etc/nginx
 
+---------------------------------------------------------------------------------------------
+Code that Crashes
 
+Accessing invalid memory means that the process tried to access a portion of the system's memory that wasn't assigned to it
 
+Undefined behavior          This means that the code is doing something that's not valid in the programming language. 
+Valgrind / Dr. Memory       A very powerful tool that can tell us if the code is doing any invalid operations no matter if it crashes are not.
+                                Valgrind  (Linux / Mac) or Dr. Memory (Linux / Windows)
+Traceback                   shows the lines of the different functions that were being executed when the problem happened
+Core files                  store all the information related to the crash so that we or someone else can debug what's going on, like a snapshot
+                                taken when the program crashes; tell system to create core files / core dumps with "ulimit -c unlimited"
+                                core file can be handed over to debugger with "gdb -c core"
 
+Segmentation Faults (Segfaults):
+    - forgetting to initialize a variable
+    - trying to access a list element outside of the valid range
+    - trying to use a portion of memory after having given it back
+    - trying to write more data than the requested portion of memory can hold
 
-
-
-
-
-
-
+Use a debugger or Debugging Symbols to identify Segfaults.
+-> for python: use pdb interactive debugger
+-> printf debugging: print messages / variables in program (comes from c - printf)
+-> use Logging Module in Python:  The logging module sets debug messages to show up when the code fails. It can be used to notify users 
+                                    when an error occurs, the reason why it occurred, and how to resolve it.
+                                    
+gdb
+    - backtrace     --> show a summary of the function calls that were used to the point where the failure occurs
+    - up            --> move to the calling function in the backtrace and check out the line and copy parameters that caused the crash
+    - list          --> show lines around the current one
+    - print <var>   --> print actual value of a variable
+    
+pdb3
+    - start with pdb3 <program.py> <arguments>
+    - gdb3 halts on first line, waits for input
+    - "next" runs to next line of code
+    - "continue" lets program runs until it fails
 
 
 
