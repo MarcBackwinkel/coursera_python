@@ -39,11 +39,12 @@ kill                          # kills a process
 killall -STOP program_name    # stops program(s) with program_name, but does not kill them
 strace                        # logs system calls, e.g. "strace ./run_program.py"
     strace -o file program    # store output to a file
-iftop                         # shows network traffic
+iftop                         # shows network traffic; shows how much data each active connection is sending over the network
 ionice                        # make our problem system reduce its priority
 iostat                        # shows statistics on the input/output operations    
 iotop                         # shows which processes use the most input and output
 locate                        # find a given file
+lsof                          # list open files
 netstat                       # gives a bunch of information about our network connections depending on the passed flags. 
                               # This command accesses a bunch of sockets that are restricted to route the administrator user on Linux. 
                               # So we'll need to call it with sudo which lets us run commands as root, and then we'll pass a bunch of flags to netstat. 
@@ -71,6 +72,10 @@ top                           # shows state of computer and processes using the 
                               # Load Average: shows how long a processer is busy in a given minute with 1 meaning it was busy all the time
                               #               normally this number should not be greater than the number of processors
                               #               if it is higher than the computer is overloaded
+                              # VIRT: virtual memory allocated for each process
+                              # RES: dynamic memory that's preserved for the specific process
+                              # SHR: memory that's shared across processes
+                              # Shift - M: sort processes by memory usage
 ulimit -c unlimited           # tell OS to create core files
 vmstat                        # shows statistics on the virtual memory operations
 
@@ -340,6 +345,77 @@ what to document        - what caused the issue
                         - how got it diagnosed
                         - the short-term remediation you applied
                         - the long-term remediation you recommend
+
+---------------------------------------------------------------------------------------------
+Resources
+
+Memory Leak             A chunk of memory that's no longer needed is not released
+Garbage Collector       In charge of freeing the memory that's no longer in use
+Memory profiler         Like a debugger, but to dig into application memory usage (e.g. Valgrind for C, C++; Guppy for Python)
+
+Quality of network connection is measured by
+                        - Latency:      The delay between sending a byte of data from one point and receiving it on the other 
+                                            (depending on the physical distance and how many imtermediate devices are between them)
+                                        Amount of time it takes for a request to reach its destination
+
+                        - Bandwidth:    How much data can be sent or received in a second
+
+    small chunks of data: latency is more important (so server should be very close to the users) 
+    BIG   chunks of data: bandwidth plays a bigger role
+
+Traffic shaping         A way of marking the data packets sent over the network with different priorities. To avoid having huge 
+                            chunks of data, use all the bandwidth
+
+Decorator               Used in Python to add extra behaviour to functions without having to modify the code
+                        
+                        e.g.
+                        Guppy       is a Python library with tools to profile an entire Python application
+
+                        e.g.
+                        from memory_profiler import profile
+
+                        @profile           # this is the Decorator: tell the profiler that we wanted to analyze the memory consumption of it
+                        def main():
+                            ...
+
+
+
+Eisenhower Decision Matrix: urgent vs. important
+                              |     urgent       |     not-urgent
+                --------------+------------------+---------------------
+                important     |       ASAP       |      Long term
+                --------------+------------------+--------------------
+                not-important |   Interruptions  |     Distractions
+
+Technical Debt          The pending work that accumulates when we choose a quick-and-easy solution instead of applying a sustainable long-term one
+
+
+Prioritization:
+    1. Make a list of all the tasks that need to be done
+    2. Check the real urgency of the tasks
+    3. Assess the importance of each issue
+    4. How much effort they will take
+
+One strategy that can help us with that is saving the most complex tasks for the moments when we're less likely to get interrupted. If you know that 
+you get busiest in the morning, and you tend to have more quiet time during the afternoon, it makes sense to work on easy and quick tasks early in the 
+day. Save the most complex tasks for later, when you'll have more time to concentrate on them. But when your focused time starts, you should make sure 
+that you work on those large complex tasks and not on the easy ones. Otherwise, the complex tasks will never get done. The key here is to always work 
+on important tasks. If a task is not important, it shouldn't be done at all. Really, we live by this rule here at Google.
+
+Estimate Time for Completing Tasks:
+    - Split Task into smaller Tasks to be estimated
+    - Compare Tasks to other Tasks you know how long it took you to complete them
+    - Add Time for testing / integration
+    - Learn from previous estimations
+
+
+
+
+
+
+
+
+
 
 
 
