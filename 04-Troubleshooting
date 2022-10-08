@@ -321,10 +321,25 @@ pdb3
     - "next" runs to next line of code
     - "continue" lets program runs until it fails
 
+---------------------------------------------------------------------------------------------
+Communication
 
+Communications Lead     Needs to know what's going on and provide timely updates on the current state and how long until the problem's resolved
 
+Incident Commander /
+Incident Controller     Needs to look at the big picture and decide what's the best use of the available resources
 
+Documentation:          - The root cause
+                        - How you diagnosed the problem and found that root cause
+                        - What you did to fix the issue
+                        - What needs to be done to prevent the problem from happening again
 
+Postmortem:             Documents that describe details of incidents to help us learn from our mistakes
+what to document        - what caused the issue
+                        - what was the impact of the issue
+                        - how got it diagnosed
+                        - the short-term remediation you applied
+                        - the long-term remediation you recommend
 
 
 
