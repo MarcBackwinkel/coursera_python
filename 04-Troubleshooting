@@ -409,8 +409,30 @@ Estimate Time for Completing Tasks:
     - Learn from previous estimations
 
 
+Everyone knows that debugging is twice as hard as writing a program in the first place. 
+So if you're as clever as you can be when you write it, how will you ever debug it?
+                                                        Brian Kernighan
+
+--> Develop code in small, digestible chunks
+--> Keep your goal clear
+
+Proactive Practices:
+    - If we are the ones writing the code, one thing we can do is to make sure that our code has good unit tests and integration tests.
+    - Continuous integration
+    - Use a Test environment
+    - Deploy software in phases or canaries
+    - Debug logging
+    - Centralized Logs Collection: A special server that gathers all the logs from all the servers, or even all the computers in the network.
+    - have a good Monitoring System
+    - Make use of Ticketing Systems
+    - Store Documentation in a well-known location / Playbooks (Knwowledge Base)
 
 
+Rubber ducking     is the process of explaining a problem to a "rubber duck", or rather yourself, to better understand the problem
+Canary deployment  is the practice of making staged releases. We roll out a software update to a small part of the users first, so they may test it
+                         and provide feedback. Once the change is accepted, the update is rolled out to the rest of the users.
+Problem domain      all information that defines the problem and constrains the solution (the constraints being part of the problem)
+Failure domain      is a logical or physical component of a system that might fail.
 
 
 
