@@ -72,6 +72,7 @@ Resources:
     exec                     # runs a specific command                  <-- be careful as this resource might not be idempotent
     file
     package
+    service
 
 
 Attributes ==> values:
@@ -130,6 +131,67 @@ DSL for Puppet defines
 
 Facts:
     $fact['is_virtual']         # checks if the system is a virtual machine
+
+
+------------------------------------------------------------------------------------------------------------------------------------------------
+local usage of puppet
+
+Installation:       sudo apt install puppet-master
+Puppet Files:       called "Manifest", always ends on .pp
+
+bash:> vim tools.pp
+
+package {'htop':            # this package ensures that the htop command is present on the computer
+    ensure => present,
+}
+
+bash:> sudo puppet apply -v tools.pp           # -v: verbose output
+
+Catalog                The list of rules that are generated for one specific computer once the server has evaluated 
+                            all variables, conditionals, and functions
+
+Resource Relationship:
+We write resource types in lowercase when declaring them, but capitalize them when referring to them from another resource's attributes.
+
+class ntp {
+    package {'ntp':
+        ensure => latest,
+    }
+    file {'/etc/ntp.conf':
+        ...
+        require => Package['ntp'],             # requires previoulsy defined package
+        notify => Service['ntp],               # all relationships like Package and Service are written with a first capital letter
+                                               #   while the relevant resources (package, file, service) are written with a first lower letter
+    }
+    service {'ntp':
+        ...
+        require => File['/etc/ntp.conf'],      # requires previoulsy defined file
+        ...
+    }
+}
+
+include ntp                                    # tell puppet that the rules of the class shall be applied
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
