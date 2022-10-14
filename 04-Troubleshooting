@@ -18,7 +18,7 @@ Bisecting               cut problem in half and test each half seperately
 Cache                   Stores data in a form that is faster to access than its original form
                         e.g. Web Proxy: stores documents, videos, pictures often downloaded from the Internet
                         e.g. DNS-Services: store IP adresses for urls
-Memory Leak             Memory which is no longer needed is not getting released
+Memory Leak             Memory which is no longer needed is not getting released/
 
 
 Problem Solving Steps

@@ -39,13 +39,19 @@ Puppet
 
 Managing the configurations of computers and a fleet of machines.
 
+          |-> process---|
+          |  Manifests  |
+          |            \|/
         Puppet master (service)
            ^            |
-    sends  |            |   apply
-    Facts  |            |   Rules
-           |           \ /
+    sends  |            |   generates Catalog
+    Facts  |            |
+           |           \|/
         Puppet agent (client)
  (uses "Providers" to apply rules to local system)
+
+
+ Puppet Agent       every physical machine, VM, Server, Routers, ... that have a puppet agent installed and can apply the rules
 
 Facts               Variables that represent characteristics of the system
 Providers           Puppet assigns providers according to predefined rules for the resource type and data collected from the system such as the family of the underlying operating system.
@@ -103,10 +109,7 @@ class ntp {                     # ntp: Network Time Protocol: method computers u
         enable: true,
         ensure => running,
     }
-
-
 }
-
 
 ------------------------------------------------------------------------------------------------------------------------------------------------
 Puppet - Domain Specific Language (DSL)
@@ -138,6 +141,10 @@ local usage of puppet
 
 Installation:       sudo apt install puppet-master
 Puppet Files:       called "Manifest", always ends on .pp
+Manifest:           a file in Puppet
+Module:             a collection of manifests and associated data always starts with a file init.pp
+                        and it should define a class with the same name as the module that you're creating
+Template:           files that are preprocessed before they've been copied into the client machines
 
 bash:> vim tools.pp
 
@@ -160,8 +167,10 @@ class ntp {
     file {'/etc/ntp.conf':
         ...
         require => Package['ntp'],             # requires previoulsy defined package
-        notify => Service['ntp],               # all relationships like Package and Service are written with a first capital letter
+        notify => Service['ntp],               # all relationships like Package and Service are written with a capital first letter
                                                #   while the relevant resources (package, file, service) are written with a first lower letter
+                                               # When defining resource types, we write them in lowercase, then capitalize them when referring 
+                                               #   to them from another resource attribute.
     }
     service {'ntp':
         ...
@@ -172,11 +181,109 @@ class ntp {
 
 include ntp                                    # tell puppet that the rules of the class shall be applied
 
+------------------------------------------------------------------------------------------------------------------------------------------------
+modules                         # A module is a collection of resources, and associated data used to expand the functionality of Puppet.
+|--module-name
+    |--files                    #  files folder in a module will contain files that won’t need to be changed like configuration files.  
+    |   |--module-name.comf
+    |
+    |--lib                      # new functions added after installing a new module can be found in the lib folder in the directory of the new module.
+    |   |--adds_functions_and_facts_already_shipped_by_puppet
+    |
+    |--manifests                
+    |   |--init.pp              # contains a class with a name of the module-name
+    |
+    |--templates                # Templates are documents that combine code, system facts, and text to render a configuration output fitting predefined rules.  
+    |   |--templates.file
+    |
+    |--metadata.json            #  includes some additional data about the module we just installed, like which versions of which operating systems it's compatible with
+
+# there are predefined modules in puppet
+# install them like e.g. sudo apt install puppet-module-puppetlabs-apache
+# module files are stored under: /usr/share/puppet/modules.available/puppetlabs-apache
+# use predefined modules by creating own module, e.g. webserver.pp with only one line
+
+        include ::apache                       # double colon before name shows puppet that this is a GLOBAL module
+
+# then apply with: sudo puppet apply -v webserver.pp
+
+------------------------------------------------------------------------------------------------------------------------------------------------
+Deploying Puppets to Clients
+
+Node            Any System where we can run a Puppet agent 
 
 
+Deploy different puppet rules on different machines by:
+    - conditionally apply rules based on facts from the machines
+    - Node definitions:
 
+                node default {
+                    class { 'sudo':  }                                                      # include class with no additional settings
+                    class { 'ntp':                                                          # include class and define additional parameters
+                        servers => ['ntp1.example.com','ntp2.example.com'] }
+                }
+                node webserver.example.com {                                                # specific node is defined by FQDN: fully qualified domain name
+                                                                                            # this node will only be applied to machines that match the FQDN
+                    class { 'sudo':  }      # include class with no additional settings
+                    class { 'ntp':          # include class and define additional parameters
+                        servers => ['ntp1.example.com','ntp2.example.com'] 
+                    }
+                    class { 'apached': }
+                }
 
+    Node definitions are usually stored in a file called "/site.pp" (<- it is not part of any module)
 
+# How is ensured that puppet receives valid information about a computer name (security issue!!!)
+--> Puppet uses PKI (Publik Key Infrastructure) / SSL (Secure Sockets Layer)
+        each machine has a    -> private key               -> public key
+
+        Certificate Authority (CA) verifies the identities of the machines --> create Certificate that states the public key goes with the machine
+        take the CA from Puppet or an external one
+
+        Certifocate Authority:  The CA either queues a certificate request for manual validation, or uses pre-shared data to verify before sending 
+                                    the certificate to the agent.
+
+        - CA becomes active when a node checks in to the puppet master for the first time
+        - CA requests a certificate
+        - Puppet master creates Certificate for Node if identity can be verified (by System's admin or an automatic process)
+        - now the Node has a valid certificate which it can use to identify itself when requesting a catalogue
+
+--> why is security so important
+        - Puppet Rules may contain confidential content
+        - being sure to only use correct machines in network (no rogue machines)
+
+In Test Environment Puppet can be configured to automatically sign every request (but NEVER do this in a productive environement)
+--> sudo puppet config --section master set autosign true
+
+BETTER BE SAFE THAN SORRY | vs. | Besser um Verzeichung bitten als um Erlaubnis (Charly Harper).
+
+---------------------------------------------------------------------------------------------------------------------------------------
+Setting up Puppet Client and Masters
+
+on Puppet Master (ubuntu.example.com):
+    TEST ONLY:  sudo puppet config --section master set autosign true
+    ssh webserver.example.com
+
+on Puppet Agent (webserver.example.com):
+    sudo apt install puppet                                 # install Puppet Agent
+    sudo puppet config set server ubuntu.example.com        # set Puppet Master
+    sudo puppet agent -v --test                             # test connection to Puppet Master
+
+on Puppet Master (ubuntu.example.com):
+    create site.pp
+
+    node webserver.example.com {
+        class {'apache':}
+    }
+    node default {}
+
+on Puppet Agent (webserver.example.com):
+    sudo puppet agent -v --test                             # Test - OK?
+    
+    # systemctl process which lets us enable the services actually running
+    sudo systemctl enable puppet                            # start puppet every time the system is rebooted so puppet agent pulls updates to config files automatically
+    sudo systemctl start puppet                             # now, manually start ctl process
+    sudo systemctl status puppet                            # see actual status, is ctl started?
 
 
 
