@@ -194,9 +194,16 @@ modules                         # A module is a collection of resources, and ass
     |   |--init.pp              # contains a class with a name of the module-name
     |
     |--templates                # Templates are documents that combine code, system facts, and text to render a configuration output fitting predefined rules.  
+    |   |                       # Templates are documents that combine code, data, and literal text to produce a final rendered output. The goal of a template 
+    |   |                       #       is to manage a complicated piece of text with simple inputs
     |   |--templates.file
     |
     |--metadata.json            #  includes some additional data about the module we just installed, like which versions of which operating systems it's compatible with
+
+Templates
+Templates are written in a templating language, which is specialized for generating text from data. Puppet supports two templating languages:
+Embedded Puppet (EPP) uses Puppet expressions in special tags. It's easy for any Puppet user to read, but only works with newer Puppet versions. (≥ 4.0, or late 3.x versions with future parser enabled.)
+Embedded Ruby (ERB) uses Ruby code in tags. You need to know a small bit of Ruby to read it, but it works with all Puppet versions.
 
 # there are predefined modules in puppet
 # install them like e.g. sudo apt install puppet-module-puppetlabs-apache
@@ -285,11 +292,78 @@ on Puppet Agent (webserver.example.com):
     sudo systemctl start puppet                             # now, manually start ctl process
     sudo systemctl status puppet                            # see actual status, is ctl started?
 
+Production              the parts of the infrastructure where a service is executed and served to its users
+
+machine_info module     gathers some information from the machine using Puppet facts and then stores it in a file.
 
 
+# Rolling out new / changed Puppet Scripts to Production:
+    - Test Environment
+        - check syntax of script with "puppet purser validate" command
+        - run the rules using the "no op"-parameter (the name comes from no operations and it makes puppet simulate what it would do without actually doing it. You can look at 
+                                                        the list of actions that it would take and check that they're exactly what you wanted puppet to do)
+        - apply rules on test machines (Puppet rspec Tests: We can set the facts involved different values and check that the catalog ends up stating what we wanted it to)
+
+    - Baked In Environments in Puppet
+    
+    - push to PROD in batches / canaries
+        - use fact "early adopters"
 
 
+---------------------------------------------------------------------------------------------------------------------------------------
+The Cloud
 
+Advantages of using cloud service:
+    Cloud services provide many advantages, like
+    - outsourcing support and maintenance, simplifying configuration management, and letting the provider take care of security.
+    - simplifying configuration management, outsourcing support and maintenance, and letting the provider take care of security.
+    - putting the provider in charge of security.
+
+
+Software as a Service (SaaS)            When a Cloud provider delivers an entire application or program to the customer, e.g. Gmail, Dropbox, MS365
+                                        Cloud Provider has full control of how the application runs
+Platform as a Service (PaaS)            When a Cloud provider offers a preconfigured platform to the customer, e.g. SQL database as a Service, Managed Web Apps
+                                                (famous Managed Web Apps: Amazon Elastic Beanstalk, Microsoft App Service, Google App Engine)
+                                        We are in charge of the Code, but we are not responsible for running the application
+Infrastructure as a Service (IaaS)      When a Cloud provider supplies only the bare-bones computing experience, e.g. run VM in the Cloud
+                                        We decide the OS of the machine, the software that is running, and so on ...
+                                        Very helpful for "Lift and Shift" Strategy:  When we migrate from traditional server configurations to the Cloud, 
+                                                        we lift the current configuration and shift it to a virtual machine
+
+Public Cloud                            The cloud service provided by to you by a third party (services are offered to the public)
+Private Cloud                           When your company owns the services and the rest of the infrastructure, whether that's on-site or in a remote data center
+Hybrind Cloud                           A mixture of both public and private clouds (it is important that services are integrated seamingless)
+Multi-Cloud                             A mixture of public and/or private clouds across vendors (gives extra protection but may be more expensive)
+
+Containers                              Applications that are packaged together with their configuration and dependencies
+                                        A virtualized environment containing applications and configurations that can run quickly and reliably on any computing environment.
+                                        If application runs in a container it can run in a container everywhere!
+
+
+DataCenters are located in REGIONS and in ZONES; choose a DataCenter next to you due to:
+    - latency
+    - eventually law policy reasons
+    - place depending Servers next to each other
+
+
+Scaling in the Cloud
+
+Capacity                How much the service can deliver
+
+Scaling can be done
+    - horizontally      add more node to a specific service, more servers
+    - vertically        make nodes bigger (increase capacity, e.g. memory, cpu, disk size)
+
+    - automatically     the service offered by the Cloud provider will use metrics to automatically increase or decrease the capaxity of the system
+                        (send right quotas for autoscaling system)
+    - manually          changes are made by humans instead of software (less complicated, but needs monitoring and might not scale quick enough)
+
+
+Important for Selection of Cloud Provider
+    - level of support (in case of any problems)
+    - Security measures cloud provider has taken (certifications like SOC 1, ISO 27001, ...)
+
+        ! We should always use reasonable judgment to protect the machines that we deploy, whether that's on physical servers running on-premise or on virtual machines in the Cloud !
 
 
 
