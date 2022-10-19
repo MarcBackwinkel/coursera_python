@@ -523,11 +523,48 @@ Nodes in Cloud Environment
     - long-lived        will be updated regularly, e.g. internal mail servers, document servers, ...
     - short-lived       will be deleted and replaced by new ones
 
+------------------------------------------------------------------------------------------------------------------
+Building Software in the Cloud
 
+Storage Solutions:
+    - Block Storage (traditional) - same as harddrive to a normal PC
+    - Object/ Blob Storage        - lets you place and retrieve objects in a storage bucket (e.g. binary cat videos, photos, ...)
+                                    storage buckets are addressed by name via API
+                                    Blob: Binary Large OBject
+                                    Blobs are pieces of data that are stored as independent objects, and require no file system.
 
+    - Database as a Service
+            -> SQL   (relational database)
+            -> NoSQL very scalable, ultra-fast; but can only be used via DB-API
 
+Storage Class:
+    - Performance
+    - Availability
+    - how often is the data accessed?
+    - Throughput, IOPS, Latency are price-relevant
+        Throughput    > The amount of data that you can read and write in a given amount of time
+        IOPS          > Input/Output Operations Per Second (IOPS)
+                        Measures how many reads or writes you can do in one second, no matter how much data you are accessing
+        Latency       > The amount of time it takes to complete a read or write operation
 
+Time to first byte      time it takes a storage system to start delivering data after a read request has been made
 
+        Hot data      > Accessed frequently and stored in hot storage    --> normally SSD
+        Cold data     > Accessed infrequently and stored in cold storage
+
+-> virtual disks:       - easily move the data around,
+                        - migrate the information on the disk to a different location, 
+                        - attach the same disk image to other machines,
+                        - create snapshots of the current state.
+
+-> Persistent Storage:  Used for instances that are long lived and need to keep data across reboots and upgrades
+
+-> Ephemeral Storage :  Used for instances that are only temporary and only need to keep local data while they're running
+                        used e.g. in Containers
+
+Shared File System Solutions    needed if data shall be shared; offered as Software as a Service
+                                the data can be accessed through network file system protocols like NFS or CIFS. This lets you connect 
+                                            many different instances or containers to the same file system
 
 
 
