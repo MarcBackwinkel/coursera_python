@@ -567,5 +567,56 @@ Shared File System Solutions    needed if data shall be shared; offered as Softw
                                             many different instances or containers to the same file system
 
 
+Load-Balancing
+    - Round-Robin DNS:  DNS         Domain Name System      url <-> IP address
+                        The Round-robin approach serves clients one at a time, starting with the first, and making rounds until it reaches the beginning again.
+                        if a url is navigated to the DNS server responds with a pool of urls in turn
+                        if one url is not reachable another one is chosen
+                        disadvantages:
+                                - no influence on which server is chosen
+                                - an overloaded server is still in the pool and can be reached to
+    
+    - Load Balancer:    - own Rules, can be very easy or super complex
+                            Sticky sessions:        All requests from the same client always go to the same backend server
+                        - perform health checks -> only healthy backends are reached to
+                        - add / remove Servers from server pool; Load Balancer supports Autoscaling
+                        - use next Load Balancer to a Client via GeoDNS and GeoIP
+                            Content Delivery Networks (CDN): Make up a network of physical hosts that are geographically located as close to
+                                                                the end users as possible
+
+Change Management
+    keep Services running and innovate / update system by fixing bugs and improving features
+
+    Step 1:
+                Unit tests
+                Integration tests
+                Continuous Integration System (CI): Will build and test our code automatically every time there is a change
+                CI-Systems: Jenkins, Travis CI (github)
+                Continuous Deployment (CD) via a Test & Production Environment
+                                                Environment: Everything needed to run the service
+                                                --> Test/Prod Env: Automatic Deployment to Test Env; release manually to Prod
+                                                --> Dev/Pre-Prod/Prod Env: push all Changes to Test, release specific Changes to Pre-Prod, Manual Push to Prod
+                                                --> A/B testing: Some requests are served using one set of code and configuration (A) and other requests are 
+                                                                    served using a different set of of code and configuration (B)
+                Build aritfacts
+
+Limitations:
+    - Quotas
+    - Limits
+    - Rate Limits:  Prevent one service from overloading the whole system, e.g. 1 call per Second of expensive API call
+    - Utilization Limits: Cap the total amount of a certain resource that you can provision (e.g. Autoscaling with a huge peak can result in several 
+                                    additional VMs which can be costy - if you run into a defined limit ask cloud provider for a quota increase)
+    - Dependencies - from cloud provider
+
+
+
+
+
+
+
+
+
+
+
 
 
