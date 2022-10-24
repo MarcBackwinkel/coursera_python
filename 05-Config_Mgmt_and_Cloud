@@ -342,6 +342,7 @@ Hybrind Cloud                           A mixture of both public and private clo
 Multi-Cloud                             A mixture of public and/or private clouds across vendors (gives extra protection but may be more expensive)
 
 Containers                              Applications that are packaged together with their configuration and dependencies
+                                        Packaged applications that are shipped together with their libraries and dependencies.
                                         A virtualized environment containing applications and configurations that can run quickly and reliably on any computing environment.
                                         If application runs in a container it can run in a container everywhere!
 
@@ -608,15 +609,117 @@ Limitations:
                                     additional VMs which can be costy - if you run into a defined limit ask cloud provider for a quota increase)
     - Dependencies - from cloud provider
 
+--------------------------------------------------------------------------------------------------------------------------------------------------------
+Monitoring and Alerting
 
+Monitoring lets us look into the history and the current status of a system.
 
+Monitoring System:
+    - AWS Cloud Watch
+    - Google Stack Driver
+    - Azure Metrics
+    - Prometheus
+    - Data Dog
+    - Nagios
 
+Whitebox Monitoring:        Checks the behaviour of the system from the inside
+                            Define variables that describe the running system
+Blackbox Monitoring:        Checks the behaviour of the system from the outside
+                            Check received response with expected response
 
+Metrics:
+    - generic, e.g. how much memory an instance is using
+    - specific to a given service that shall be monitored
 
+Metrics can be:
+    - pull model: service pulls metrics from a monitoring system
+    - push model: When push monitoring is used, the service being monitored actively sends metrics to the monitoring system.
 
+To interpret Metrics compare them to their history Metrics and compare them to depending other Metrics.
 
+You only want to store the metrics that you care about, since storing all of these metrics in the system takes space, 
+        and storage space costs money.
 
+HTTP response status codes:
+    - 100-199: Informational responses
+    - 200-299: Successful responses
+    - 300-399: Redirects
+    - 400-499: Client errors
+    - 500-599: Server errors
 
+    400 - 499: Error on Client Side / Browser
+    500 - 599: Error on Server Side
 
+Alerts
+- watch a system periodically and send e-mails when system does not perform as expected
+- on Linux systems this can be done with "cron" (tool to schedule periodic jobs)
+- Raising an alert signals that something is broken and a human needs to respond
 
+Differentiate Alerts:
+    - Immediate Attention --called--> "Pages" (comes from Pager)
+    - need Attention in the near Future --called--> Bugs
+    - need no Attention --> do not send any alerts
 
+All Alerts should be Actionable (you should receive an information what to do)
+
+No system is ever available 100% of the time, it's just not possible. But depending on how critical the service is, it can have different 
+    Service Level objectives (SLO): SLOs are pre-established performance goals for a specific service.
+SLOs need to be measurable, which means that there should be metrics that track how the service is performing and let you check if it's 
+    meeting the objectives or not.
+Many SLOs are expressed as how much time a service will behave as expected. For example, a service might promise to be available 99% of the time.
+Availability targets like this one are commonly named by their number of nines. 
+    - 99% example would be a two 9 service, 
+    - 99.9% availability is a three 9 service, 
+    - 99.999% availability is a five 9 service. Five nine services promised a total down time of up to five minutes in a year.
+
+Service Level Agreement (SLA)    is a commitment between a provider and a client.
+Service level objectives though are more like a soft target, it's what the maintaining team aims for
+
+Error budget        e.g. three 9 service means the service can be off for 43 minutes per month <- that is the error budget
+
+Goals should be redefined over time making use of the monitoring results (understand the system, monitor it closed and set realistic targets)
+
+-------------------------------------------------------------------------------------------------------------------------------------
+Troubleshooting and Debugging
+
+In case a VM is misconfigured to a Version 2 and will not start anymore:
+    - Deploy Version 1 of the VM, so it will start again
+    - Copy disk image of Version 2 and mount it in another VM to analyse what went wrong
+
+Methods of Troubleshooting:
+    - Run a test VM in a test environment:  Testing through software is always our best bet in the cloud.
+    - Call the service provider:            Part of the beauty of running services in the Cloud is that you aren't responsible for everything!
+                                            Most Cloud providers are happy to provide various levels of support.
+
+Try to isolate failure on the server side:
+    - is it a regional problem? Try to run the VM in another region
+    - is it a performance problem? Try to run the VM in a bigger machine
+
+Try to isolate failure on client side:
+    - perform a rollback and compare monitoring of "new" system with "old" system - Where do they deviate?
+
+If you operate a service that stores any kind of data, it's critical that you implement automatic backups and that 
+    you periodically check that those backups are working correctly by performing restores
+
+Have multiple points of redundancy:
+Have a secondary service running. If the first service fails, the load balancer or the DNS entries can easily be changed to 
+    point to the secondary service. Or have your service running in different regions of the world or two different cloud vendors.
+
+Having a well-documented disaster recovery plan:
+Keep documentation of your service up-to-date (e.g. how to start the service).
+
+Having automatic backups:
+Having automatic backups makes it easier to restore and recover.
+
+systemctl 
+    is a utility for controlling the systemd system and service manager. It comes with a long list of options for different functionality,
+    including starting, stopping, restarting, or reloading a daemon.
+    sudo systemctl status apache2                   # check the status of the web server i.e apache2
+    sudo systemctl start apache2                    # start service
+    sudo systemctl restart apache2                  # restart the server
+    sudo systemctl --type=service | grep jimmy      # let's check for the availability of any service with the keyword "jimmy".
+    sudo systemctl stop jimmytest && sudo systemctl disable jimmytest  # stop and disable this service "jimmytest"
+
+netstat
+    To find which processes are listening on which ports, we'll be using the netstat command, which returns network-related information
+    sudo netstat -nlp    # using a combination of flags along with the netstat command to check which process is using a particular port

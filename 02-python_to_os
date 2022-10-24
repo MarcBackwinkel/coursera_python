@@ -11,6 +11,7 @@ Steps for coding Projects.
 pip install module_name
 
 Importing Modules:
+from re import L
 from subprocess import CREATE_DEFAULT_ERROR_MODE
 import module      # when module is imported, __init__.py is read
 
@@ -313,6 +314,7 @@ free              # shows the amount of unused memory on the current system
 head              # prints first ten lines
 host              # return name to given ip address
 jobs: lists the jobs currently running or stopped
+    jobs -l       - gives the output of list as a list
 less              # terminal paging program
 ls                # list contents of a directory
 ls -l
@@ -320,12 +322,16 @@ ls -l
 permissions        number of inodes           owner     group     size of     last date of     name
 user group all     that point to the file        of the file      file        modification
 
+netstat           # to find which processes are listening on which ports, we'll be using the netstat command, which returns 
+                  #  network-related information
 ps                # list all currently running processes
     ps ax             # list all currently running processes in the running computer
     ps e              # shows the environment for the processes listed
 pwd               # print working directory
 rm                # remove file(s)
 sort              # sort -n (sort numerically], -r (sort reverse)
+systemctl         # a utility for controlling the systemd system and service manager. It comes with a long list of options for 
+                  #     different functionality, including starting, stopping, restarting, or reloading a daemon.
 tail              # show last 10 lines
 test              # evaluates the conditions received and exits with zero when they are true and with one when they're false
     test -e           # tests if a file exists
