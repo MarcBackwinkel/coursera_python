@@ -11,6 +11,7 @@ Steps for coding Projects.
 pip install module_name
 
 Importing Modules:
+import json
 from re import L
 from subprocess import CREATE_DEFAULT_ERROR_MODE
 import module      # when module is imported, __init__.py is read
@@ -139,6 +140,160 @@ bash-Commands
 grep
 -i  : search case insensitive
 egrep                                       # also supports + and ? as repeated match qualifiers 
+
+#=============================================================================================================================================================
+Data Serialization
+
+JSON - Javascript Object Notation
+# JSON is used frequently for transmitting data between web services
+
+import json
+with open('people.json', 'w') as people_json:
+    json.dump(original_object, json_object, indent=4)   # serializes original object --> json format 
+
+[
+    {
+        "att11": "value11",
+        "att12": "value12",
+        {
+            "dict_att11": "dict_value11",
+            "dict_att12": "dict_value12"
+        }
+    },
+    {
+        "att21": "value21",
+        "att22": "value22",
+        {
+            "dict_att21": "dict_value21",
+            "dict_att22": "dict_value22"
+        }
+    },
+    {
+        ...
+    }
+]
+
+# JSON has strings, which are enclosed in quotes                                    "string"
+# JSON has integers                                                                 42
+# JSON has objects, which are key-value pair structures like Python dictionaries    {
+                                                                                      "name": "Sabrina Green",
+                                                                                      "username": "sgreen",
+                                                                                      "uid": 1002
+                                                                                    }
+# And a key-value pair can contain another object as a value. 
+# JSON has arrays, which are equivalent to Python lists. Arrays can contain strings, numbers, objects, or other arrays.  
+                                                                                    [
+                                                                                      "apple",
+                                                                                      "banana",
+                                                                                      12345,
+                                                                                      67890,
+                                                                                      {
+                                                                                        "name": "Sabrina Green",
+                                                                                        "username": "sgreen",
+                                                                                        "phone": {
+                                                                                        "office": "802-867-5309",
+                                                                                        "cell": "802-867-5310"
+                                                                                        },
+                                                                                        "department": "IT Infrastructure",
+                                                                                        "role": "Systems Administrator"
+                                                                                      }
+                                                                                    ]
+
+# json-File:
+import json
+
+people = [
+  {
+    "name": "Sabrina Green",
+    "username": "sgreen",
+    "phone": {
+      "office": "802-867-5309",
+      "cell": "802-867-5310"
+    },
+    "department": "IT Infrastructure",
+    "role": "Systems Administrator"
+  },
+  {
+    "name": "Eli Jones",
+    "username": "ejones",
+    "phone": {
+      "office": "684-348-1127"
+    },
+    "department": "IT Infrastructure",
+    "role": "IT Specialist"
+  }
+]
+
+with open('people.json', 'w') as people_json:
+    json.dump(people, people_json)
+
+# json-dump people_json:
+[{"name": "Sabrina Green", "username": "sgreen", "phone": {"office": "802-867-5309", "cell": "802-867-5310"}, "department": "IT Infrastructure", "role": "Systems Administrator"}, {"name": "Eli Jones", "username": "ejones", "phone": {"office": "684-348-1127"}, "department": "IT Infrastructure", "role": "IT Specialist"}]
+
+# use indent-parameter to make it more readable:
+with open('people.json', 'w') as people_json:
+    json.dump(people, people_json, indent=2)
+
+# resulting file:
+[
+  {
+    "name": "Sabrina Green",
+    "username": "sgreen",
+    "phone": {
+      "office": "802-867-5309",
+      "cell": "802-867-5310"
+    },
+    "department": "IT Infrastructure",
+    "role": "Systems Administrator"
+  },
+  {
+    "name": "Eli Jones",
+    "username": "ejones",
+    "phone": {
+      "office": "684-348-1127"
+    },
+    "department": "IT Infrastructure",
+    "role": "IT Specialist"
+  }
+]
+
+# Another option is to use the dumps() method, which also serializes Python objects, 
+# but returns a string instead of writing directly to a file. 
+people_json = json.dumps(people)
+print(people_json)
+[{"name": "Sabrina Green", "username": "sgreen", "phone": {"office": "802-867-5309", "cell": "802-867-5310"}, "department": "IT Infrastructure", "role": "Systems Administrator"}, {"name": "Eli Jones", "username": "ejones", "phone": {"office": "684-348-1127"}, "department": "IT Infrastructure", "role": "IT Specialist"}]
+
+# The load() method does the inverse of the dump() method. It deserializes JSON from a file into basic Python objects. 
+# The loads() method also deserializes JSON into basic Python objects, but parses a string instead of a file.
+import json
+with open('people.json', 'r') as people_json:
+    people = json.load(people_json)
+print(people)
+[{'name': 'Sabrina Green', 'username': 'sgreen', 'phone': {'office': '802-867-5309', 'cell': '802-867-5310'}, 'department': 'IT Infrastructure', 'role': 'Systems Administrator'}, {'name': 'Eli Jones', 'username': 'ejones', 'phone': {'office': '684-348-1127'}, 'department': 'IT Infrastructure', 'role': 'IT Specialist'}, {'name': 'Melody Daniels', 'username': 'mdaniels', 'phone': {'cell': '846-687-7436'}, 'department': 'User Experience Research', 'role': 'Programmer'}, {'name': 'Charlie Rivera', 'username': 'riverac', 'phone': {'office': '698-746-3357'}, 'department': 'Development', 'role': 'Web Developer'}]
+
+#----------------------------------------------------------------------------------------------------------------------------------------
+
+YAML - Yet Another Markup Language
+# YAML is used the most for storing configuration values
+
+import yaml
+with open('people.yaml', 'w') as people_yaml:
+    yaml.safe_dump(original_object, yaml_object)
+
+- department: IT Infrastructure
+  name: Sabrina Green
+  phone:
+    cell: 802-867-5310
+    office: 802-867-5309
+  role: Systems Administrator
+  username: sgreen
+- department: IT Infrastructure
+  name: Eli Jones
+  phone:
+    office: 684-348-1127
+  role: IT Specialist
+  username: ejones
+
 
 #=============================================================================================================================================================
 
