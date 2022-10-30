@@ -11,9 +11,12 @@ Steps for coding Projects.
 pip install module_name
 
 Importing Modules:
+from email.message import EmailMessage
 import json
+from mailbox import MaildirMessage
 from re import L
 from subprocess import CREATE_DEFAULT_ERROR_MODE
+from typing import ValuesView
 import module      # when module is imported, __init__.py is read
 
 import module sys               # The sys module provides information about the Python interpreter's constants, functions, and methods. 
@@ -296,7 +299,6 @@ with open('people.yaml', 'w') as people_yaml:
 
 
 #=============================================================================================================================================================
-
 Data Streams
 
 I/O Streams:     STDIN, STDOUT, STERROR
@@ -350,7 +352,170 @@ timeout  - set own timeout, e.g. if system hangs up
 shell    - true, will first execute an instance of the system default shell and run the given command inside of it
 
 #=============================================================================================================================================================
+E-Mails
 
+# defined by SMTP (Simple Mail Transfer Protocol) and MIME (Multipurpose Internet Mail Extensions) standards
+# SMTP: This protocol specifies how computers can deliver email to each other.
+# MIME: MIME standard is used to encode all sorts of files as text strings that can be sent via email. 
+from email.message import EmailMessage
+message = EmailMessage                      # create an empty Email
+print(message)                              # printing the message object gives us the string representation of that object
+
+# From, To, and Subject are examples of email header fields. They’re key-value pairs of labels and instructions 
+# used by email clients and servers to route and display the email. They’re separate from the email's message body, 
+# which is the main content of the message.
+
+sender = "me@example.com"
+recipient = "you@example.com"
+message['From'] = sender
+message['To'] = recipient
+print(message)
+# --> From: me@example.com
+# --> To: you@example.com
+
+message['Subject'] = 'Greetings from {} to {}!'.format(sender, recipient)
+print(message)
+# --> From: me@example.com
+# --> To: you@example.com
+# --> Subject: Greetings from me@example.com to you@example.com!
+
+body = """Hey there!
+...
+I'm learning to send emails using Python!"""
+message.set_content(body)
+print(message)
+# --> From: me@example.com
+# --> To: you@example.com
+# --> Subject: Greetings from me@example.com to you@example.com!
+# --> MIME-Version: 1.0
+# --> Content-Type: text/plain; charset="utf-8"
+# --> Content-Transfer-Encoding: 7bit
+# --> 
+# --> Hey there!
+# --> 
+# --> I'm learning to send email using Python!
+
+Attachments
+# In order for the recipient of your message to understand what to do with an attachment, you  need to label the attachment 
+# with a MIME type and subtype to tell them what sort of file you’re sending. The Internet Assigned Numbers Authority (IANA) 
+# (iana.org) hosts a registry of valid MIME types. If you know the correct type and subtype of the files you’ll be sending, 
+# you can use those values directly. If you don't know, you can use the Python mimetypes module to make a good guess!
+import os.path
+attachment_path = "/tmp/example.png"
+attachment_filename = os.path.basename(attachment_path)
+import mimetypes
+mime_type, _ = mimetypes.guess_type(attachment_path)
+print(mime_type)
+# --> image/png
+# mime_type string contains the MIME type and subtype, separated by a slash. The EmailMessage type needs a MIME type and 
+# subtypes as separate strings, so let's split this up:
+mime_type, mime_subtype = mime_type.split('/', 1)
+# Let's add the attachment to our message:
+with open(attachment_path, 'rb') as ap:
+    message.add_attachment(ap.read(),
+        maintype=mime_type,
+        subtype=mime_subtype,
+        filename=os.path.basename(attachment_path))
+print(message)
+# --> Content-Type: multipart/mixed; boundary="===============5350123048127315795=="
+# --> 
+# --> --===============5350123048127315795==
+# --> Content-Type: text/plain; charset="utf-8"
+# --> Content-Transfer-Encoding: 7bit
+# --> 
+# --> Hey there!
+# --> 
+# --> I'm learning to send email using Python!
+# --> 
+# --> --===============5350123048127315795==
+# --> Content-Type: image/png
+# --> Content-Transfer-Encoding: base64
+# --> Content-Disposition: attachment; filename="example.png"
+# --> MIME-Version: 1.0
+# --> 
+# --> iVBORw0KGgoAAAANSUhEUgAAASIAAABSCAYAAADw69nDAAAACXBIWXMAAAsTAAALEwEAmpwYAAAg
+# --> AElEQVR4nO2dd3wUZf7HP8/M9k2nKIJA4BCUNJKgNJWIBUUgEggCiSgeVhA8jzv05Gc5z4KHiqin
+# --> eBZIIBDKIXggKIeCRCAhjQAqx4UiCARSt83uzDy/PzazTDZbwy4BnHde+9qZydNn97Pf5/uUIZRS
+
+# The entire message can still be serialized as a text string, including the image that we attached! 
+# The email message as a whole has the MIME type "multipart/mixed". Each part of the message has its own MIME type. 
+# The message body is still there as a "text/plain" part, and the image attachment is a "image/png" part.
+
+SENDING MAILS
+
+import smtplib
+
+# With smtplib, we'll create an object that will represent our mail server, and handle sending messages to that server.
+# You can connect to a remote SMTP server using Transport Layer Security (TLS). An earlier version of the TLS protocol was 
+# called Secure Sockets Layer (SSL), and you’ll sometimes see TLS and SSL used interchangeably. This SSL/TLS is the same protocol 
+# that's used to add a secure transmission layer to HTTP, making it HTTPS. Within the smtplib, there are two classes for making 
+# connections to an SMTP server: The SMTP class will make a direct SMTP connection, and the SMTP_SSL class will make a SMTP connection 
+# over SSL/TLS. Like this:
+mail_server = smtplib.SMTP_SSL('smtp.example.com')
+
+# If you want to see the SMTP messages that are being sent back and forth by the smtplib module behind the scenes, you can set the debug 
+# level on the SMTP or SMTP_SSL object.
+mail_server.set_debuglevel(1)
+
+# Now that we’ve made a connection to the SMTP server, the next thing we need to do is authenticate to the SMTP server. Typically, 
+# email providers wants us to provide a username and password to connect. Let's put the password into a variable so it's not visible 
+# on the screen.
+import getpass
+mail_pass = getpass.getpass('Password? ')
+# --> Password?
+# now the Password must be entered...
+# The Password is not displayed during input, but Watch out, the mail_pass variable is still just an ordinary string!
+
+# authenticate to the email server using the SMTP object's login method.
+mail_server.login(sender, mail_pass)
+# --> (235, b'2.7.0 Accepted')
+
+# If the login attempt succeeds, the login method will return a tuple of the SMTP status code and a message explaining the 
+# reason for the status. If the login attempt fails, the module will raise a SMTPAuthenticationError exception.
+
+# Send message!
+mail_server.send_message(message)
+# Close connection to mail-server
+mail_server.quit()
+
+#=============================================================================================================================================================
+PDFs
+
+from reportlab.platypus import SimpleDocTemplate
+report = SimpleDocTemplate("/tmp/report.pdf")
+
+# Flowables         are sort of like chunks of a document that reportlab can arrange to make a complete report
+from reportlab.platypus import Paragraph, Spacer, Table, Image        # these are Flowables
+
+# We have to tell reportlab what style we want each part of the document to have, so let's import some more things 
+# from the module to describe style
+from reportlab.lib.styles import getSampleStyleSheet
+styles = getSampleStyleSheet()
+# You can make a style all of your own, but we’ll use the default provided by the module for these examples. 
+
+report_title = Paragraph("A Complete Inventory of My Fruit", styles["h1"])
+
+# generate report out of a list of flowables
+report.build([report_title])
+
+# add Table (data is contained in a list of lists)
+from reportlab.lib import colors
+table_style = [('GRID', (0,0), (-1,-1), 1, colors.black)]
+report_table = Table(data=[[1st_line, 1st_value],[2nd_line, 2nd_value],[3rd_line, 3rd_value]], style=table_style, hAlign="LEFT")
+report.build([report_title, report_table])
+
+# add Graphics
+from reportlab.graphics.shapes import Drawing         # Drawing is a Flowable
+from reportlab.graphics.charts.piecharts import Pie   # Pie is not a Flowable but can be placed in Flowable "Drawing"
+report_pie = Pie(width=3*inch, height=3*inch)
+
+# To add data to our Pie chart, we need two separate lists: One for data, and one for labels. 
+report_pie.data = [value1, value2, value3]
+report_pie.labels = [label1, label2, label3]
+
+report.build([report_title, report_table, report_chart])
+
+#=============================================================================================================================================================
 Error Handling
 
 try:
@@ -362,6 +527,83 @@ except OSError:
 if not wanted_condition:
     raise ValueError('descriptive error message')
     
+#=============================================================================================================================================================
+HTTP-requests
+
+import requests                             # python module to
+                                            #   - find the web server, 
+                                            #   - make a network connection, 
+                                            #   - construct an HTTP message, 
+                                            #   - wait for a response, or
+                                            #   - decode the response
+response = requests.get('url')   
+
+# e.g. 
+response = requests.get('www.google.com')
+print(response.text[:300])                  # print first 300 characters of response
+# --> <!doctype html><html itemscope="" itemtype="http://schema.org/WebPage" lang="de"><head><meta content="text/html; charset=UTF-8" http-equiv="Content-Type"><meta content="/images/branding/googleg/1x/googleg_standard_color_128dp.png" itemprop="image"><title>Google</title><script nonce="dZfbIAn803LDGXS9
+# response contains HTML webpage content
+
+# requests already unzipped the response
+# see raw response
+response = requests.get('www.google.com', stream=True)
+print(response.raw.read()[:100])
+# --> b'\x1f\x8b\x08\x00\x00\x00\x00\x00\x02\xff\xc5Z\xdbz\x9b\xc8\x96\xbe\xcfS`\xf2\xb5-\xc6X\x02$t\xc28\xe3v\xdc\xdd\xee\xce\xa9\xb7\xdd;\xe9\x9d\xce\xf6W@\t\x88\x11`@>D\xd6\x9b\xce\xe5<\xc3\\\xcd\xc5\xfc\xab8\x08\xc9Nz\x1f.&\x8e1U\xb5j\xd5:\xfc\xb5jU\x15\x87;^\xe2\x16\xf7)\x97\x82b\x1e\x1d\x1d\xd2S'
+response.request.headers['Accept-Encoding']
+# --> 'gzip, deflate'
+response.headers['Content-Encoding']
+# --> 'gzip'
+
+# How to find out if the request was successfull
+response.ok                     # True
+response.status_code            # 200
+# Use requests module to raise an HTTPError if response was not successfull
+response.raise_for_status()
+
+# HTTP GET and POST Methods
+HTTP methods:
+    - GET:      retrieves or gets the resource specified in the URL
+    - POST:     sends, or posts, data to a web service      
+    - PUT
+    - DELETE
+
+# A GET request can have parameters.
+https://example.com/path/to/api/cat_pictures?search=grey+kitten&max_results=15
+                                            ? The question mark separates the URL resource from the resource's parameters
+                                              These parameters are one or more key-value pairs, formatted as a query string
+                                                               & Combines different parameters
+
+# use requests.get to hand over parameters more comfortably
+p = {"search": "grey kitten",
+     "max_results": 15}
+response = requests.get("https://example.com/path/to/api", params=p)
+response.request.url
+# --> 'https://example.com/path/to/api?search=grey+kitten&max_results=15'
+
+# In the a.m. cases we perform a get requests but also send data (the parameters) to a web service
+# You can also use the POST method which tends to be used when there's a bunch of data to transmit.
+
+# A POST request looks very similar to a GET request. Instead of setting the params attribute, which gets turned into a query 
+# string and appended to the URL, we use the data attribute, which contains the data that will be sent as part of the POST request.
+p = {"description": "white kitten",
+     "name": "Snowball",
+     "age_months": 6}
+response = requests.post("https://example.com/path/to/api", data=p)
+response.request.url
+# --> 'https://example.com/path/to/api'
+# url is much simpler now, the parameters went into the body of the HTTP message
+response.request.body
+# --> 'description=white+kitten&name=Snowball&age_months=6'
+
+# or use JSON
+p = {"description": "white kitten",
+     "name": "Snowball",
+     "age_months": 6}
+response = requests.post("https://example.com/path/to/api", json=p)
+response.request.url
+# --> 'https://example.com/path/to/api'
+response.request.body
+# --> b'{"description": "white kitten", "name": "Snowball", "age_months": 6}'
 
 
 #=============================================================================================================================================================
@@ -591,4 +833,31 @@ tail /var/log/syslog  | cut -d' ' -f5-           ! split line with spaces ( -d' 
 cut -d' ' -f5- /var/log/syslog | sort | uniq -c | sort -nr | head
                                                  ! find out which process message occur most often
                                                  
-                                                 
+#=============================================================================================================================================================
+Django
+
+full-stack web framework
+A full-stack web framework handles a bunch of different components that are typical when creating a web application. 
+It contains libraries that help you handle each of the pieces: 
+    - writing your application's code, 
+    - storing and retrieving data, 
+    - receiving web requests, and 
+    - responding to them
+
+Web frameworks are commonly split into three basic components: 
+    (1) the application code, where you'll add all of your application's logic; 
+    (2) the data storage, where you'll configure what data you want to store and how you're storing it; and 
+    (3) the web server, where you'll state which pages are served by which logic.
+
+Splitting your code like that helps you write more modular code, promotes code reuse, and allows for flexibility 
+when viewing and accessing data. 
+For example, 
+    you could have a simple web page where users of the system can access the information already stored in it, and 
+    a separate programmatic interface that can be used by other scripts or applications to transmit data to the system.
+
+urlresolver module:         core module in Django that interprets URL requests and matches them against a list of defined patterns
+view:                       If a URL matches a pattern, the request is passed to the associated function, called a view
+
+Django can also handle reading and writing data from a database.
+object-relational mapper (ORM): This tool provides an easy mapping between data models defined as Python classes and an 
+                                underlying database that stores the data in question.
