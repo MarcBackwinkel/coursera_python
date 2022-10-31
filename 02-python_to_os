@@ -513,6 +513,9 @@ report_pie = Pie(width=3*inch, height=3*inch)
 report_pie.data = [value1, value2, value3]
 report_pie.labels = [label1, label2, label3]
 
+report_chart = Drawing()
+report_chart.add(report_pie)                            # Pie is not a Flowable but can be placed in Flowable "Drawing"
+
 report.build([report_title, report_table, report_chart])
 
 #=============================================================================================================================================================
